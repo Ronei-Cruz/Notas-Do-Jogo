@@ -1,14 +1,15 @@
 using NotasDoJogo.Persistence.Contexts;
+using NotasDoJogo.Persistence.Contracts;
 
 namespace NotasDoJogo.Persistence
 {
-    public class GeralPersist
+    public class GeralPersist : IGeralPersist
     {
         private readonly NJContext _context;
+        
         public GeralPersist(NJContext context)
         {
             _context = context;
-            
         }
 
         public void Add<T>(T entity) where T : class

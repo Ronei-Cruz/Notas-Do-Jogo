@@ -1,5 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using NotasDoJogo.Application.Contracts;
+using NotasDoJogo.Application.Services;
+using NotasDoJogo.Persistence;
 using NotasDoJogo.Persistence.Contexts;
+using NotasDoJogo.Persistence.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +19,10 @@ builder.Services.AddControllers();
 
 // Configure AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddScoped<IJogadorService, JogadorService>();
+builder.Services.AddScoped<IJogadorPersist, JogadorPersist>();
+builder.Services.AddScoped<IGeralPersist, GeralPersist>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

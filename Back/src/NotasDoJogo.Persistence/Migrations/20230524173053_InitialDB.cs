@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace NotasDoJogo.Persistence.Migrations
 {
-    public partial class Initial : Migration
+    public partial class InitialDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -22,8 +23,7 @@ namespace NotasDoJogo.Persistence.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Posicao = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Idade = table.Column<int>(type: "int", nullable: false),
-                    Media = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
+                    Idade = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -36,7 +36,10 @@ namespace NotasDoJogo.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Jogo = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Data = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -67,9 +70,10 @@ namespace NotasDoJogo.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    UsuarioId = table.Column<int>(type: "int", nullable: true),
-                    JogadorId = table.Column<int>(type: "int", nullable: true),
-                    Pontuacao = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
+                    JogadorId = table.Column<int>(type: "int", nullable: false),
+                    UsuarioId = table.Column<int>(type: "int", nullable: false),
+                    PartidaId = table.Column<int>(type: "int", nullable: false),
+                    Valor = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -78,35 +82,18 @@ namespace NotasDoJogo.Persistence.Migrations
                         name: "FK_Notas_Jogadores_JogadorId",
                         column: x => x.JogadorId,
                         principalTable: "Jogadores",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Notas_Partidas_PartidaId",
+                        column: x => x.PartidaId,
+                        principalTable: "Partidas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Notas_Usuarios_UsuarioId",
                         column: x => x.UsuarioId,
                         principalTable: "Usuarios",
-                        principalColumn: "Id");
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "PartidaNota",
-                columns: table => new
-                {
-                    PartidaId = table.Column<int>(type: "int", nullable: false),
-                    NotaId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PartidaNota", x => new { x.PartidaId, x.NotaId });
-                    table.ForeignKey(
-                        name: "FK_PartidaNota_Notas_NotaId",
-                        column: x => x.NotaId,
-                        principalTable: "Notas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PartidaNota_Partidas_PartidaId",
-                        column: x => x.PartidaId,
-                        principalTable: "Partidas",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -118,29 +105,26 @@ namespace NotasDoJogo.Persistence.Migrations
                 column: "JogadorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Notas_PartidaId",
+                table: "Notas",
+                column: "PartidaId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Notas_UsuarioId",
                 table: "Notas",
                 column: "UsuarioId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PartidaNota_NotaId",
-                table: "PartidaNota",
-                column: "NotaId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "PartidaNota");
-
-            migrationBuilder.DropTable(
                 name: "Notas");
 
             migrationBuilder.DropTable(
-                name: "Partidas");
+                name: "Jogadores");
 
             migrationBuilder.DropTable(
-                name: "Jogadores");
+                name: "Partidas");
 
             migrationBuilder.DropTable(
                 name: "Usuarios");

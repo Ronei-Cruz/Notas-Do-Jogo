@@ -11,8 +11,8 @@ using NotasDoJogo.Persistence.Contexts;
 namespace NotasDoJogo.Persistence.Migrations
 {
     [DbContext(typeof(NJContext))]
-    [Migration("20230518171637_Initial")]
-    partial class Initial
+    [Migration("20230524173053_InitialDB")]
+    partial class InitialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -29,9 +29,6 @@ namespace NotasDoJogo.Persistence.Migrations
 
                     b.Property<int>("Idade")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("Media")
-                        .HasColumnType("decimal(65,30)");
 
                     b.Property<string>("Nome")
                         .HasColumnType("longtext");
@@ -50,18 +47,23 @@ namespace NotasDoJogo.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("JogadorId")
+                    b.Property<int>("JogadorId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Pontuacao")
-                        .HasColumnType("decimal(65,30)");
+                    b.Property<int>("PartidaId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("UsuarioId")
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Valor")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("JogadorId");
+
+                    b.HasIndex("PartidaId");
 
                     b.HasIndex("UsuarioId");
 
@@ -74,24 +76,15 @@ namespace NotasDoJogo.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("Data")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Jogo")
+                        .HasColumnType("longtext");
+
                     b.HasKey("Id");
 
                     b.ToTable("Partidas");
-                });
-
-            modelBuilder.Entity("NotasDoJogo.Domain.Models.PartidaNota", b =>
-                {
-                    b.Property<int>("PartidaId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NotaId")
-                        .HasColumnType("int");
-
-                    b.HasKey("PartidaId", "NotaId");
-
-                    b.HasIndex("NotaId");
-
-                    b.ToTable("PartidaNota");
                 });
 
             modelBuilder.Entity("NotasDoJogo.Domain.Models.Usuario", b =>
@@ -114,40 +107,38 @@ namespace NotasDoJogo.Persistence.Migrations
             modelBuilder.Entity("NotasDoJogo.Domain.Models.Nota", b =>
                 {
                     b.HasOne("NotasDoJogo.Domain.Models.Jogador", "Jogador")
-                        .WithMany()
-                        .HasForeignKey("JogadorId");
-
-                    b.HasOne("NotasDoJogo.Domain.Models.Usuario", "Usuario")
                         .WithMany("Notas")
-                        .HasForeignKey("UsuarioId");
-
-                    b.Navigation("Jogador");
-
-                    b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("NotasDoJogo.Domain.Models.PartidaNota", b =>
-                {
-                    b.HasOne("NotasDoJogo.Domain.Models.Nota", "Nota")
-                        .WithMany()
-                        .HasForeignKey("NotaId")
+                        .HasForeignKey("JogadorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("NotasDoJogo.Domain.Models.Partida", "Partida")
-                        .WithMany("PartidasNotas")
+                        .WithMany("Notas")
                         .HasForeignKey("PartidaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Nota");
+                    b.HasOne("NotasDoJogo.Domain.Models.Usuario", "Usuario")
+                        .WithMany("Notas")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Jogador");
 
                     b.Navigation("Partida");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("NotasDoJogo.Domain.Models.Jogador", b =>
+                {
+                    b.Navigation("Notas");
                 });
 
             modelBuilder.Entity("NotasDoJogo.Domain.Models.Partida", b =>
                 {
-                    b.Navigation("PartidasNotas");
+                    b.Navigation("Notas");
                 });
 
             modelBuilder.Entity("NotasDoJogo.Domain.Models.Usuario", b =>

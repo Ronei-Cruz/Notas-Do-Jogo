@@ -6,6 +6,6 @@ namespace NotasDoJogo.Application.Dtos
         public string Nome { get; set; }
         public string Posicao { get; set; }
         public int Idade { get; set; }
-        public decimal Media { get; set; }
+        public List<NotaDTO> Notas { get; set; }
     }
 }

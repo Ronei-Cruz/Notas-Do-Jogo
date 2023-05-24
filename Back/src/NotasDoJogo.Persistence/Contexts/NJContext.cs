@@ -16,20 +16,20 @@ namespace NotasDoJogo.Persistence.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<PartidaNota>()
-                .HasKey(pn => new { pn.PartidaId, pn.NotaId });
+            modelBuilder.Entity<Jogador>()
+                .HasMany(j => j.Notas)
+                .WithOne(n => n.Jogador)
+                .HasForeignKey(n => n.JogadorId);
 
-            modelBuilder.Entity<PartidaNota>()
-                .HasOne(pn => pn.Partida)
-                .WithMany(p => p.PartidasNotas)
-                .HasForeignKey(pn => pn.PartidaId);
+            modelBuilder.Entity<Usuario>()
+                .HasMany(u => u.Notas)
+                .WithOne(n => n.Usuario)
+                .HasForeignKey(n => n.UsuarioId);
 
-            modelBuilder.Entity<PartidaNota>()
-                .HasOne(pn => pn.Nota)
-                .WithMany()
-                .HasForeignKey(pn => pn.NotaId);
-
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Partida>()
+                .HasMany(p => p.Notas)
+                .WithOne(n => n.Partida)
+                .HasForeignKey(n => n.PartidaId);
         }
         
     }

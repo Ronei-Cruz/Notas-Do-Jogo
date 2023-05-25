@@ -41,25 +41,52 @@ namespace NotasDoJogo.Application.Services
             }
         }
 
-        public Task<List<JogadorDTO>> GetJogadoresAsync()
+        public async Task<JogadorDTO> GetJogadorByIdAsync(int jogadorId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var jogadorRetorno = await _jogadorPersit.GetByIdAsync(jogadorId);
+                return _mapper.Map<JogadorDTO>(jogadorRetorno);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
-        public Task CalcularMediaJogadorAsync(int jogadorId)
+        public async Task<List<JogadorDTO>> GetJogadoresAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var jogadorRetorno = await _jogadorPersit.GetAllAsync();
+                return _mapper.Map<List<JogadorDTO>>(jogadorRetorno);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
+
         
-        public Task DeleteJogadorAsync(int jogadorId)
+        public async Task<bool> DeleteJogadorAsync(int jogadorId)
         {
-            throw new NotImplementedException();
+            
+            try
+            {
+                var jogador = await _jogadorPersit.GetByIdAsync(jogadorId);
+                if (jogador == null) throw new Exception("Evento para delete não encontrado.");
+
+                _geralPersist.Delete<Jogador>(jogador);
+                return (await _geralPersist.SaveChangesAsync());
+            }
+            catch (Exception ex)
+            {
+                
+                throw new Exception(ex.Message);
+            }
         }
 
-        public Task<JogadorDTO> GetJogadorPorIdAsync(int jogadorId)
-        {
-            throw new NotImplementedException();
-        }
+        
 
         public Task UpdateJogadorAsync(JogadorDTO jogador)
         {

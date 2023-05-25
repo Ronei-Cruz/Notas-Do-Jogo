@@ -33,12 +33,12 @@ namespace NotasDoJogo.API.Controllers
             }
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetJogadorById(int id)
+        [HttpGet]
+        public async Task<IActionResult> GetAllJogadores()
         {
             try
             {
-                var jogador = await _jogadorService.GetJogadorPorIdAsync(id);
+                var jogador = await _jogadorService.GetJogadoresAsync();
                 if (jogador != null)
                 {
                     return Ok(jogador);
@@ -48,6 +48,41 @@ namespace NotasDoJogo.API.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetJogadorById(int id)
+        {
+            try
+            {
+                var jogador = await _jogadorService.GetJogadorByIdAsync(id);
+                if (jogador != null)
+                {
+                    return Ok(jogador);
+                }
+                return NotFound("Jogador não encontrado.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteJogador(int id)
+        {
+            try
+            {
+                var jogador = await _jogadorService.GetJogadorByIdAsync(id);
+                if (jogador == null) return NoContent();
+
+                return await _jogadorService.DeleteJogadorAsync(id) ? Ok(new {message = "Deletado."}) :
+                    throw new Exception("Ocorreu um problema não especifico ao tentar deletar Jogador.");
+            }
+            catch (Exception ex)
+            {
+                 return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
             }
         }
     }

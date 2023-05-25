@@ -88,9 +88,30 @@ namespace NotasDoJogo.Application.Services
 
         
 
-        public Task UpdateJogadorAsync(JogadorDTO jogador)
+        public async Task<JogadorDTO> UpdateJogadorAsync(int jogadorId, JogadorDTO model)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var jogador = await _jogadorPersit.GetByIdAsync(jogadorId);
+                if (jogador == null) return null;
+
+                model.Id = jogador.Id;
+                _mapper.Map(model, jogador);
+
+                _geralPersist.Update<Jogador>(jogador);
+                
+                if (await _geralPersist.SaveChangesAsync())
+                {
+                    var jogadorUpdate = await _jogadorPersit.GetByIdAsync(jogador.Id);
+                    return _mapper.Map<JogadorDTO>(jogadorUpdate);
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

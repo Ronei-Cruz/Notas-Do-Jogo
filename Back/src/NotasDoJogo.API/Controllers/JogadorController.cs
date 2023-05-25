@@ -69,6 +69,22 @@ namespace NotasDoJogo.API.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateJogador(int id, JogadorDTO model)
+        {
+            try
+            {
+                var jogador = await _jogadorService.UpdateJogadorAsync(id, model);
+                if (jogador == null) return BadRequest("Erro ao tentar atualizar jogador.");
+                return Ok(jogador);
+            }
+            catch (Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                $"Erro ao tentar atualizar jogador. Erro {ex.Message}");
+            }
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteJogador(int id)
         {

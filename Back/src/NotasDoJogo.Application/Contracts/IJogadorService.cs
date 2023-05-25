@@ -7,7 +7,7 @@ namespace NotasDoJogo.Application.Contracts
         Task<JogadorDTO> GetJogadorByIdAsync(int jogadorId);
         Task<List<JogadorDTO>> GetJogadoresAsync();
         Task<JogadorDTO> AddJogadorAsync(JogadorDTO jogador);
-        Task UpdateJogadorAsync(JogadorDTO jogador);
+        Task<JogadorDTO> UpdateJogadorAsync(int id, JogadorDTO jogador);
         Task <bool>DeleteJogadorAsync(int jogadorId);
         
     }

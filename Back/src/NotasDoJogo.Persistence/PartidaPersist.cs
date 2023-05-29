@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using NotasDoJogo.Domain.Models;
 using NotasDoJogo.Persistence.Contexts;
 using NotasDoJogo.Persistence.Contracts;
@@ -13,14 +14,14 @@ namespace NotasDoJogo.Persistence
             _context = context;
         }
 
-        public Task<List<Partida>> GetPartidasByJogadorId(int jogadorId)
+        public async Task<List<Partida>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Partidas.ToListAsync();
         }
 
-        public Task<List<Partida>> GetPartidasByUsuarioId(int usuarioId)
+        public async Task<Partida> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Partidas.FindAsync(id);
         }
     }
 }

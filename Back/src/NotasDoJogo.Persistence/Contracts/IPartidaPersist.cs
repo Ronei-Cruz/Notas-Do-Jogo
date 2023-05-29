@@ -4,7 +4,7 @@ namespace NotasDoJogo.Persistence.Contracts
 {
     public interface IPartidaPersist
     {
-        Task<List<Partida>> GetPartidasByJogadorId(int jogadorId);
-        Task<List<Partida>> GetPartidasByUsuarioId(int usuarioId);
+        Task<Partida> GetByIdAsync(int id);
+        Task<List<Partida>> GetAllAsync();
     }
 }

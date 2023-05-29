@@ -23,6 +23,8 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IGeralPersist, GeralPersist>();
 builder.Services.AddScoped<IJogadorService, JogadorService>();
 builder.Services.AddScoped<IJogadorPersist, JogadorPersist>();
+builder.Services.AddScoped<IPartidaService, PartidaService>();
+builder.Services.AddScoped<IPartidaPersist, PartidaPersist>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IUsuarioPersist, UsuarioPersist>();
 

@@ -88,7 +88,6 @@ namespace NotasDoJogo.Application.Services
             }
             catch (Exception ex)
             {
-                
                 throw new Exception(ex.Message);
             }
         }
@@ -105,7 +104,6 @@ namespace NotasDoJogo.Application.Services
             }
             catch (Exception ex)
             {
-                
                 throw new Exception(ex.Message);
             }
         }

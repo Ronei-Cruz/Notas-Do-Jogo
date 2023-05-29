@@ -11,7 +11,7 @@ using NotasDoJogo.Persistence.Contexts;
 namespace NotasDoJogo.Persistence.Migrations
 {
     [DbContext(typeof(NJContext))]
-    [Migration("20230524173053_InitialDB")]
+    [Migration("20230529132807_InitialDB")]
     partial class InitialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

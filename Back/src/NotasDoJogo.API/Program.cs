@@ -20,9 +20,11 @@ builder.Services.AddControllers();
 // Configure AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+builder.Services.AddScoped<IGeralPersist, GeralPersist>();
 builder.Services.AddScoped<IJogadorService, JogadorService>();
 builder.Services.AddScoped<IJogadorPersist, JogadorPersist>();
-builder.Services.AddScoped<IGeralPersist, GeralPersist>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IUsuarioPersist, UsuarioPersist>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

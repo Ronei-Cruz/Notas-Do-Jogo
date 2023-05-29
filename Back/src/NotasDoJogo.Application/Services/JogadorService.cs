@@ -67,27 +67,6 @@ namespace NotasDoJogo.Application.Services
             }
         }
 
-        
-        public async Task<bool> DeleteJogadorAsync(int jogadorId)
-        {
-            
-            try
-            {
-                var jogador = await _jogadorPersit.GetByIdAsync(jogadorId);
-                if (jogador == null) throw new Exception("Evento para delete não encontrado.");
-
-                _geralPersist.Delete<Jogador>(jogador);
-                return (await _geralPersist.SaveChangesAsync());
-            }
-            catch (Exception ex)
-            {
-                
-                throw new Exception(ex.Message);
-            }
-        }
-
-        
-
         public async Task<JogadorDTO> UpdateJogadorAsync(int jogadorId, JogadorDTO model)
         {
             try
@@ -113,5 +92,22 @@ namespace NotasDoJogo.Application.Services
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<bool> DeleteJogadorAsync(int jogadorId)
+        {
+            try
+            {
+                var jogador = await _jogadorPersit.GetByIdAsync(jogadorId);
+                if (jogador == null) throw new Exception("Jogador para delete não encontrado.");
+
+                _geralPersist.Delete<Jogador>(jogador);
+                return (await _geralPersist.SaveChangesAsync());
+            }
+            catch (Exception ex)
+            {
+                
+                throw new Exception(ex.Message);
+            }
+        }  
     }
 }

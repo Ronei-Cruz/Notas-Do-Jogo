@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using NotasDoJogo.Domain.Models;
 using NotasDoJogo.Persistence.Contexts;
 using NotasDoJogo.Persistence.Contracts;
@@ -12,19 +13,34 @@ namespace NotasDoJogo.Persistence
             _context = context;
         }
 
-        public Task<double> GetMediaNotasByJogadorId(int jogadorId)
+        public async Task<List<Nota>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Notas.ToListAsync();
         }
 
-        public Task<List<Nota>> GetNotasByJogadorId(int jogadorId)
+        public async Task<Nota> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Notas.FindAsync(id);
         }
 
-        public Task<List<Nota>> GetNotasByUsuarioId(int usuarioId)
+        public async Task<List<Nota>> GetNotasByJogadorIdAsync(int jogadorId, int partidaId)
         {
-            throw new NotImplementedException();
+            return await _context.Notas.Where(n => n.JogadorId == jogadorId && n.PartidaId == partidaId).ToListAsync();
+        }
+
+        public async Task<List<Nota>> GetNotasByUsuarioIdAsync(int usuarioId)
+        {
+            return await _context.Notas.Where(n => n.UsuarioId == usuarioId).ToListAsync();
+        }
+
+        public async Task<List<Nota>> GetNotasByPartidaIdAsync(int partidaId)
+        {
+            return await _context.Notas.Where(n => n.PartidaId == partidaId).ToListAsync();
+        }
+
+        public async Task<int> GetNotaCountByJogadorIdAsync(int jogadorId)
+        {
+            return await _context.Notas.CountAsync(n => n.JogadorId == jogadorId);
         }
     }
 }

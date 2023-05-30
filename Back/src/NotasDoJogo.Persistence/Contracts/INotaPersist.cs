@@ -4,9 +4,12 @@ namespace NotasDoJogo.Persistence.Contracts
 {
     public interface INotaPersist
     {
-        Task<List<Nota>> GetNotasByJogadorId(int jogadorId);
-        Task<List<Nota>> GetNotasByUsuarioId(int usuarioId);
-        Task<double> GetMediaNotasByJogadorId(int jogadorId);
+        Task<Nota> GetByIdAsync(int id);
+        Task<List<Nota>> GetAllAsync();
+        Task<List<Nota>> GetNotasByJogadorIdAsync(int jogadorId, int partidaId);
+        Task<List<Nota>> GetNotasByUsuarioIdAsync(int usuarioId);
+        Task<List<Nota>> GetNotasByPartidaIdAsync(int partidaId);
+        Task<int> GetNotaCountByJogadorIdAsync(int jogadorId);
 
     }
 }

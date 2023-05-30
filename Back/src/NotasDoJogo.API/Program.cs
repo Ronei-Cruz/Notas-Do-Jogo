@@ -27,6 +27,8 @@ builder.Services.AddScoped<IPartidaService, PartidaService>();
 builder.Services.AddScoped<IPartidaPersist, PartidaPersist>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IUsuarioPersist, UsuarioPersist>();
+builder.Services.AddScoped<INotaService, NotaService>();
+builder.Services.AddScoped<INotaPersist, NotaPersist>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

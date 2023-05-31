@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using NotasDoJogo.Application.Contracts;
 using NotasDoJogo.Application.Services;
-using NotasDoJogo.Persistence;
+using NotasDoJogo.Persistence.Repository;
 using NotasDoJogo.Persistence.Contexts;
 using NotasDoJogo.Persistence.Contracts;
 

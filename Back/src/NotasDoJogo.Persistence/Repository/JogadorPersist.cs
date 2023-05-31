@@ -3,7 +3,7 @@ using NotasDoJogo.Domain.Models;
 using NotasDoJogo.Persistence.Contexts;
 using NotasDoJogo.Persistence.Contracts;
 
-namespace NotasDoJogo.Persistence
+namespace NotasDoJogo.Persistence.Repository
 {
     public class JogadorPersist : IJogadorPersist
     {

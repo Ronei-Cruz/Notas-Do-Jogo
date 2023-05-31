@@ -9,6 +9,7 @@ namespace NotasDoJogo.Application.Contracts
         Task<List<NotaDTO>> GetNotasAsync();
         Task<List<NotaDTO>> GetNotasByJogadorIdAsync(int jogadorId, int partidaId);
         Task<List<NotaDTO>> GetNotasByUsuarioIdAsync(int usuarioId);
+        Task<decimal> GetMediaPartidaAsync(int partidaId);
         Task<decimal> GetNotaCountByJogadorIdAsync(int jogadorId, int partidaId);
         Task <bool>DeleteNotaAsync(int notaId);
     }

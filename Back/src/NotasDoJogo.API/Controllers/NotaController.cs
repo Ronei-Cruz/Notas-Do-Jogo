@@ -75,6 +75,20 @@ namespace NotasDoJogo.API.Controllers
             }
         }
 
+        [HttpGet("partida/{partidaId}/media")]
+        public async Task<IActionResult> GetMediaByPartidaId(int partidaId)
+        {
+            try
+            {
+                var notas = await _notaService.GetMediaPartidaAsync(partidaId);
+                return Ok(notas);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("jogador/{jogadorId}/partida/{partidaId}/media")]
         public async Task<IActionResult> GetNotaMediaByJogadorId(int jogadorId, int partidaId)
         {

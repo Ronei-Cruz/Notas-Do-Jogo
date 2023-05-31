@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using NotasDoJogo.Application.Contracts;
 using NotasDoJogo.Application.Dtos;
@@ -131,6 +127,28 @@ namespace NotasDoJogo.Application.Services
                 throw new Exception(ex.Message);
             }
             
+        }
+
+        public async Task<decimal> GetMediaPartidaAsync(int partidaId)
+        {
+            try
+            {
+                var partidas = await _notaPersist.GetNotasByPartidaIdAsync(partidaId);
+                if (partidas.Count > 0)
+                {
+                    decimal somaNotas = partidas.Sum(n => n.Valor);
+                    decimal media = somaNotas / partidas.Count;
+                    return Math.Round(media,1);
+                }
+                else
+                {
+                    return 0;
+                } 
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

@@ -3,7 +3,7 @@ using NotasDoJogo.Domain.Models;
 using NotasDoJogo.Persistence.Contexts;
 using NotasDoJogo.Persistence.Contracts;
 
-namespace NotasDoJogo.Persistence
+namespace NotasDoJogo.Persistence.Repository
 {
     public class NotaPersist : INotaPersist
     {
@@ -23,7 +23,7 @@ namespace NotasDoJogo.Persistence
             return await _context.Notas.FindAsync(id);
         }
 
-        public async Task<List<Nota>> GetNotasByJogadorIdAsync(int jogadorId, int partidaId)
+        public async Task<List<Nota>> GetNotasByJogadorIdAsync(int jogadorId, int partidaId) 
         {
             return await _context.Notas.Where(n => n.JogadorId == jogadorId && n.PartidaId == partidaId).ToListAsync();
         }

@@ -4,6 +4,7 @@ using NotasDoJogo.Application.Services;
 using NotasDoJogo.Persistence.Repository;
 using NotasDoJogo.Persistence.Contexts;
 using NotasDoJogo.Persistence.Contracts;
+using NotasDoJogo.Persistence.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var dbContext = services.GetRequiredService<NJContext>();
+    var dbSeeder = new DbSeeder();
+    if (!dbContext.Jogadores.Any())
+    {
+        dbSeeder.SeedData(dbContext);
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -6,7 +6,7 @@ namespace NotasDoJogo.Persistence.Seeders
 {
     public class DbSeeder
     {
-        Random random = new Random();
+        readonly Random random = new();
         public void SeedData(NJContext dbContext)
         {
             SeedJogadores(dbContext);
@@ -16,7 +16,7 @@ namespace NotasDoJogo.Persistence.Seeders
 
         }
 
-        private void SeedJogadores(NJContext dbContext)
+        private static void SeedJogadores(NJContext dbContext)
         {
             var jogadores = new List<Jogador>
             {
@@ -38,7 +38,7 @@ namespace NotasDoJogo.Persistence.Seeders
             dbContext.SaveChanges();
         }
 
-        private void SeedPartidas(NJContext dbContext)
+        private static void SeedPartidas(NJContext dbContext)
         {
             var partidas = new List<Partida>
             {
@@ -51,7 +51,7 @@ namespace NotasDoJogo.Persistence.Seeders
             dbContext.SaveChanges();
         }
 
-        private void SeedUsuarios(NJContext dbContext)
+        private static void SeedUsuarios(NJContext dbContext)
         {
             var usuarios = new List<Usuario>
             {

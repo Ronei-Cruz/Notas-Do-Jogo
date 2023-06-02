@@ -16,11 +16,11 @@ namespace NotasDoJogo.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddJogador([FromBody] JogadorDTO jogadorDTO)
+        public async Task<IActionResult> AddJogador([FromBody] JogadorDto jogadorDto)
         {
             try
             {
-                var jogador = await _jogadorService.AddJogadorAsync(jogadorDTO);
+                var jogador = await _jogadorService.AddJogadorAsync(jogadorDto);
                 if (jogador != null)
                 {
                     return CreatedAtAction(nameof(GetJogadorById), new { id = jogador.Id }, jogador);
@@ -70,11 +70,11 @@ namespace NotasDoJogo.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateJogador(int id, JogadorDTO model)
+        public async Task<IActionResult> UpdateJogador(int id, JogadorDto jogadorDto)
         {
             try
             {
-                var jogador = await _jogadorService.UpdateJogadorAsync(id, model);
+                var jogador = await _jogadorService.UpdateJogadorAsync(id, jogadorDto);
                 if (jogador == null) return BadRequest("Erro ao tentar atualizar jogador.");
                 return Ok(jogador);
             }

@@ -16,15 +16,14 @@ namespace NotasDoJogo.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddUsuario([FromBody] UsuarioDTO usuarioDTO)
+        public async Task<IActionResult> AddUsuario([FromBody] UsuarioDto usuarioDto)
         {
             try
             {
-                var usuario = await _usuarioService.AddUsuarioAsync(usuarioDTO);
+                var usuario = await _usuarioService.AddUsuarioAsync(usuarioDto);
                 if (usuario != null)
-                {
                     return CreatedAtAction(nameof(GetUsuarioById), new { id = usuario.Id }, usuario);
-                }
+
                 return BadRequest("Falha ao adicionar o usuario.");
             }
             catch (Exception ex)
@@ -70,12 +69,13 @@ namespace NotasDoJogo.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUsuario(int id, UsuarioDTO model)
+        public async Task<IActionResult> UpdateUsuario(int id, UsuarioDto model)
         {
             try
             {
                 var usuario = await _usuarioService.UpdateUsuarioAsync(id, model);
                 if (usuario == null) return BadRequest("Erro ao tentar atualizar usuario.");
+                
                 return Ok(usuario);
             }
             catch (Exception ex)

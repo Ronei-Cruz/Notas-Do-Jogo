@@ -19,95 +19,58 @@ namespace NotasDoJogo.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<UsuarioDTO> AddUsuarioAsync(UsuarioDTO model)
+        public async Task<UsuarioDto> AddUsuarioAsync(UsuarioDto usuario)
         {
-            var usuario = _mapper.Map<Usuario>(model);
+            var model = _mapper.Map<Usuario>(usuario);
 
-            try
+            _geralPersist.Add(model);
+            var saveChangesResult = await _geralPersist.SaveChangesAsync();
+            
+            if (saveChangesResult)
             {
-                _geralPersist.Add<Usuario>(usuario);
-                var saveChangesResult = await _geralPersist.SaveChangesAsync();
-                
-                if (saveChangesResult == true)
-                {
-                    var usuarioRetorno = await _usuarioPersit.GetByIdAsync(usuario.Id);
-                    return _mapper.Map<UsuarioDTO>(usuarioRetorno);
-                }
-                return null;
+                var usuarioRetorno = await _usuarioPersit.GetByIdAsync(model.Id);
+                return _mapper.Map<UsuarioDto>(usuarioRetorno);
             }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            return null;
         }
 
-        public async Task<UsuarioDTO> GetUsuarioByIdAsync(int usuarioId)
+        public async Task<UsuarioDto> GetUsuarioByIdAsync(int usuarioId)
         {
-            try
-            {
-                var usuarioRetorno = await _usuarioPersit.GetByIdAsync(usuarioId);
-                return _mapper.Map<UsuarioDTO>(usuarioRetorno);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            var usuarioRetorno = await _usuarioPersit.GetByIdAsync(usuarioId);
+            return _mapper.Map<UsuarioDto>(usuarioRetorno);
         }
 
-        public async Task<List<UsuarioDTO>> GetUsuariosAsync()
+        public async Task<List<UsuarioDto>> GetUsuariosAsync()
         {
-            try
-            {
-                var usuarioRetorno = await _usuarioPersit.GetAllAsync();
-                return _mapper.Map<List<UsuarioDTO>>(usuarioRetorno);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            var usuarioRetorno = await _usuarioPersit.GetAllAsync();
+            return _mapper.Map<List<UsuarioDto>>(usuarioRetorno);
         }
 
-        public async Task<UsuarioDTO> UpdateUsuarioAsync(int usuarioId, UsuarioDTO model)
+        public async Task<UsuarioDto> UpdateUsuarioAsync(int id, UsuarioDto usuario)
         {
-            try
-            {
-                var usuario = await _usuarioPersit.GetByIdAsync(usuarioId);
-                if (usuario == null) return null;
+            var model = await _usuarioPersit.GetByIdAsync(id);
+            if (model == null) return null;
 
-                model.Id = usuario.Id;
-                _mapper.Map(model, usuario);
+            usuario.Id = model.Id;
+            _mapper.Map(usuario, model);
 
-                _geralPersist.Update<Usuario>(usuario);
-                
-                if (await _geralPersist.SaveChangesAsync())
-                {
-                    var usuarioUpdate = await _usuarioPersit.GetByIdAsync(usuario.Id);
-                    return _mapper.Map<UsuarioDTO>(usuarioUpdate);
-                }
-                return null;
-            }
-            catch (Exception ex)
+            _geralPersist.Update(model);
+            
+            if (await _geralPersist.SaveChangesAsync())
             {
-                throw new Exception(ex.Message);
+                var usuarioUpdate = await _usuarioPersit.GetByIdAsync(model.Id);
+                return _mapper.Map<UsuarioDto>(usuarioUpdate);
             }
+            return null;
         }
 
         public async Task<bool> DeleteUsuarioAsync(int usuarioId)
         {
-            try
-            {
-                var usuario = await _usuarioPersit.GetByIdAsync(usuarioId);
-                if (usuario == null) throw new Exception("Usuário para delete não encontrado.");
+            var usuario = await _usuarioPersit.GetByIdAsync(usuarioId) 
+                ?? throw new Exception("Usuário para delete não encontrado.");
 
-                _geralPersist.Delete<Usuario>(usuario);
-                return (await _geralPersist.SaveChangesAsync());
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        
+            _geralPersist.Delete(usuario);
+            return await _geralPersist.SaveChangesAsync();
+        } 
     }
 }

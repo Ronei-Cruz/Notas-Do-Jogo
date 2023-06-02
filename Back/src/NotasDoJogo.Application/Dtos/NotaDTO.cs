@@ -1,6 +1,6 @@
 namespace NotasDoJogo.Application.Dtos
 {
-    public class NotaDTO
+    public class NotaDto
     {
         public int Id { get; set; }
         public int JogadorId { get; set; }

@@ -4,10 +4,10 @@ namespace NotasDoJogo.Application.Contracts
 {
     public interface IJogadorService
     {
-        Task<JogadorDTO> GetJogadorByIdAsync(int jogadorId);
-        Task<List<JogadorDTO>> GetJogadoresAsync();
-        Task<JogadorDTO> AddJogadorAsync(JogadorDTO jogador);
-        Task<JogadorDTO> UpdateJogadorAsync(int id, JogadorDTO jogador);
+        Task<JogadorDto> GetJogadorByIdAsync(int jogadorId);
+        Task<List<JogadorDto>> GetJogadoresAsync();
+        Task<JogadorDto> AddJogadorAsync(JogadorDto jogador);
+        Task<JogadorDto> UpdateJogadorAsync(int id, JogadorDto jogador);
         Task <bool>DeleteJogadorAsync(int jogadorId);
         
     }

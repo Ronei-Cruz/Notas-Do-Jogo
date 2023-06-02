@@ -19,135 +19,79 @@ namespace NotasDoJogo.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<NotaDTO> AddNotaAsync(NotaDTO model)
+        public async Task<NotaDto> AddNotaAsync(NotaDto nota)
         {
-            var nota = _mapper.Map<Nota>(model);
+            var model = _mapper.Map<Nota>(nota);
 
-            try
-            {
-                _geralPersist.Add<Nota>(nota);
-                await _geralPersist.SaveChangesAsync();
+            _geralPersist.Add(model);
+            await _geralPersist.SaveChangesAsync();
 
-                var notaRetorno = await _notaPersist.GetByIdAsync(nota.Id);
-                return _mapper.Map<NotaDTO>(notaRetorno);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            var notaRetorno = await _notaPersist.GetByIdAsync(model.Id);
+            return _mapper.Map<NotaDto>(notaRetorno);
         }
 
-        public async Task<NotaDTO> GetNotaByIdAsync(int notaId)
+        public async Task<NotaDto> GetNotaByIdAsync(int notaId)
         {
-            try
-            {
-                var notaRetorno = await _notaPersist.GetByIdAsync(notaId);
-                return _mapper.Map<NotaDTO>(notaRetorno);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            var notaRetorno = await _notaPersist.GetByIdAsync(notaId);
+            return _mapper.Map<NotaDto>(notaRetorno);
         }
 
-        public async Task<List<NotaDTO>> GetNotasAsync()
+        public async Task<List<NotaDto>> GetNotasAsync()
         {
-            try
-            {
-                var notaRetorno = await _notaPersist.GetAllAsync();
-                return _mapper.Map<List<NotaDTO>>(notaRetorno);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            var notaRetorno = await _notaPersist.GetAllAsync();
+            return _mapper.Map<List<NotaDto>>(notaRetorno);
         }
 
         public async Task<decimal> GetNotaCountByJogadorIdAsync(int jogadorId, int partidaId)
         {
-            try
+            var notas = await _notaPersist.GetNotasPartidaIdByJogadorIdAsync(jogadorId, partidaId);
+            if (notas.Count > 0)
             {
-                var notas = await _notaPersist.GetNotasByJogadorIdAsync(jogadorId, partidaId);
-                if (notas.Count > 0)
-                {
-                    decimal somaNotas = notas.Sum(n => n.Valor);
-                    decimal media = somaNotas / notas.Count;
-                    return Math.Round(media,1);
-                }
-                else
-                {
-                    return 0;
-                } 
+                decimal somaNotas = notas.Sum(n => n.Valor);
+                decimal media = somaNotas / notas.Count;
+                return Math.Round(media,1);
             }
-            catch (Exception ex)
+            else
             {
-                throw new Exception(ex.Message);
+                return 0;
             }
         }
 
-        public async Task<List<NotaDTO>> GetNotasByJogadorIdAsync(int jogadorId, int partidaId)
+        public async Task<List<NotaDto>> GetNotasPartidaIdByJogadorIdAsync(int jogadorId, int partidaId)
         {
-            try
-            {
-                var notas = await _notaPersist.GetNotasByJogadorIdAsync(jogadorId, partidaId);
-                return _mapper.Map<List<NotaDTO>>(notas);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            var notas = await _notaPersist.GetNotasPartidaIdByJogadorIdAsync(jogadorId, partidaId);
+            if(notas.Count == 0) throw new KeyNotFoundException("Jogador ou Partida não existe.");
+            return _mapper.Map<List<NotaDto>>(notas);
         }
 
-        public async Task<List<NotaDTO>> GetNotasByUsuarioIdAsync(int usuarioId)
+        public async Task<List<NotaDto>> GetNotasByUsuarioIdAsync(int usuarioId)
         {
-            try
-            {
-                var notas = await _notaPersist.GetNotasByUsuarioIdAsync(usuarioId);
-                return _mapper.Map<List<NotaDTO>>(notas);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            var notas = await _notaPersist.GetNotasByUsuarioIdAsync(usuarioId);
+            if(notas.Count == 0) throw new KeyNotFoundException("Usuário não existe.");
+            return _mapper.Map<List<NotaDto>>(notas);
         }
 
         public async Task<bool> DeleteNotaAsync(int notaId)
         {
-            try
-            {
-                var nota = await _notaPersist.GetByIdAsync(notaId);
+            var nota = await _notaPersist.GetByIdAsync(notaId) 
+                ?? throw new Exception("Nota para Delete não encotrada.");
 
-                if(nota == null) throw new Exception("Nota para Delete não encotrada.");
-
-                _geralPersist.Delete<Nota>(nota);
-                return (await _geralPersist.SaveChangesAsync()); 
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            
+            _geralPersist.Delete(nota);
+            return await _geralPersist.SaveChangesAsync();            
         }
 
         public async Task<decimal> GetMediaPartidaAsync(int partidaId)
         {
-            try
+            var partidas = await _notaPersist.GetNotasByPartidaIdAsync(partidaId);
+            if (partidas.Count > 0)
             {
-                var partidas = await _notaPersist.GetNotasByPartidaIdAsync(partidaId);
-                if (partidas.Count > 0)
-                {
-                    decimal somaNotas = partidas.Sum(n => n.Valor);
-                    decimal media = somaNotas / partidas.Count;
-                    return Math.Round(media,1);
-                }
-                else
-                {
-                    return 0;
-                } 
+                decimal somaNotas = partidas.Sum(n => n.Valor);
+                decimal media = somaNotas / partidas.Count;
+                return Math.Round(media,1);
             }
-            catch (Exception ex)
+            else
             {
-                throw new Exception(ex.Message);
+                return 0;
             }
         }
     }

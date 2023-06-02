@@ -23,7 +23,7 @@ namespace NotasDoJogo.Persistence.Repository
             return await _context.Notas.FindAsync(id);
         }
 
-        public async Task<List<Nota>> GetNotasByJogadorIdAsync(int jogadorId, int partidaId) 
+        public async Task<List<Nota>> GetNotasPartidaIdByJogadorIdAsync(int jogadorId, int partidaId) 
         {
             return await _context.Notas.Where(n => n.JogadorId == jogadorId && n.PartidaId == partidaId).ToListAsync();
         }

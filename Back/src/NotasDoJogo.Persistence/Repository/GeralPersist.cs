@@ -27,14 +27,14 @@ namespace NotasDoJogo.Persistence.Repository
             _context.Remove(entity);
         }
 
-        public void DeleteRange<T>(T[] entityArray) where T : class
+        public void DeleteRange<T>(T[] entity) where T : class
         {
-            _context.RemoveRange(entityArray);
+            _context.RemoveRange(entity);
         }
 
         public async Task<bool> SaveChangesAsync()
         {
-            return (await _context.SaveChangesAsync() > 0);
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

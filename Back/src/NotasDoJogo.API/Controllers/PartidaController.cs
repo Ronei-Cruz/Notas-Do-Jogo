@@ -16,11 +16,11 @@ namespace NotasDoJogo.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddPartida([FromBody] PartidaDTO partidaDTO)
+        public async Task<IActionResult> AddPartida([FromBody] PartidaDto partidaDto)
         {
             try
             {
-                var partida = await _partidaService.AddPartidaAsync(partidaDTO);
+                var partida = await _partidaService.AddPartidaAsync(partidaDto);
                 if (partida != null)
                 {
                     return CreatedAtAction(nameof(GetPartidaById), new { id = partida.Id }, partida);
@@ -66,7 +66,7 @@ namespace NotasDoJogo.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePartida(int id, PartidaDTO model)
+        public async Task<IActionResult> UpdatePartida(int id, PartidaDto model)
         {
             try
             {

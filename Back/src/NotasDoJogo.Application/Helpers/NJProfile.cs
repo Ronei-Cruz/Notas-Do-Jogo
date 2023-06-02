@@ -8,10 +8,10 @@ namespace NotasDoJogo.Application.Helpers
     {
         public NJProfile()
         {
-            CreateMap<Usuario, UsuarioDTO>().ReverseMap();
-            CreateMap<Jogador, JogadorDTO>().ReverseMap();
-            CreateMap<Nota, NotaDTO>().ReverseMap();
-            CreateMap<Partida, PartidaDTO>().ReverseMap();
+            CreateMap<Usuario, UsuarioDto>().ReverseMap();
+            CreateMap<Jogador, JogadorDto>().ReverseMap();
+            CreateMap<Nota, NotaDto>().ReverseMap();
+            CreateMap<Partida, PartidaDto>().ReverseMap();
         }
     }
 }

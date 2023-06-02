@@ -18,10 +18,10 @@ namespace NotasDoJogo.Persistence.Repository
         {
             return await _context.Usuarios.ToListAsync();
         }
+        
         public async Task<Usuario> GetByIdAsync(int id)
         {
             return await _context.Usuarios.FindAsync(id);
         }
-
     }
 }

@@ -19,95 +19,57 @@ namespace NotasDoJogo.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<JogadorDTO> AddJogadorAsync(JogadorDTO model)
+        public async Task<JogadorDto> AddJogadorAsync(JogadorDto jogador)
         {
-            var jogador = _mapper.Map<Jogador>(model);
+            var model = _mapper.Map<Jogador>(jogador);
+            _geralPersist.Add(model);
+            var saveChangesResult = await _geralPersist.SaveChangesAsync();
 
-            try
+            if (saveChangesResult)
             {
-                _geralPersist.Add<Jogador>(jogador);
-                var saveChangesResult = await _geralPersist.SaveChangesAsync();
-                
-                if (saveChangesResult == true)
-                {
-                    var jogadorRetorno = await _jogadorPersit.GetByIdAsync(jogador.Id);
-                    return _mapper.Map<JogadorDTO>(jogadorRetorno);
-                }
-                return null;
+                var jogadorRetorno = await _jogadorPersit.GetByIdAsync(model.Id);
+                return _mapper.Map<JogadorDto>(jogadorRetorno);
             }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            return null;
         }
 
-        public async Task<JogadorDTO> GetJogadorByIdAsync(int jogadorId)
+        public async Task<JogadorDto> GetJogadorByIdAsync(int jogadorId)
         {
-            try
-            {
-                var jogadorRetorno = await _jogadorPersit.GetByIdAsync(jogadorId);
-                return _mapper.Map<JogadorDTO>(jogadorRetorno);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            var jogadorRetorno = await _jogadorPersit.GetByIdAsync(jogadorId);
+            return _mapper.Map<JogadorDto>(jogadorRetorno);
         }
 
-        public async Task<List<JogadorDTO>> GetJogadoresAsync()
+        public async Task<List<JogadorDto>> GetJogadoresAsync()
         {
-            try
-            {
-                var jogadorRetorno = await _jogadorPersit.GetAllAsync();
-                return _mapper.Map<List<JogadorDTO>>(jogadorRetorno);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            var jogadorRetorno = await _jogadorPersit.GetAllAsync();
+            return _mapper.Map<List<JogadorDto>>(jogadorRetorno);
         }
 
-        public async Task<JogadorDTO> UpdateJogadorAsync(int jogadorId, JogadorDTO model)
+        public async Task<JogadorDto> UpdateJogadorAsync(int id, JogadorDto jogador)
         {
-            try
-            {
-                var jogador = await _jogadorPersit.GetByIdAsync(jogadorId);
-                if (jogador == null) return null;
+            var model = await _jogadorPersit.GetByIdAsync(id);
+            if (jogador == null) return null;
 
-                model.Id = jogador.Id;
-                _mapper.Map(model, jogador);
+            jogador.Id = model.Id;
+            _mapper.Map(jogador, model);
 
-                _geralPersist.Update<Jogador>(jogador);
-                
-                if (await _geralPersist.SaveChangesAsync())
-                {
-                    var jogadorUpdate = await _jogadorPersit.GetByIdAsync(jogador.Id);
-                    return _mapper.Map<JogadorDTO>(jogadorUpdate);
-                }
-                return null;
-            }
-            catch (Exception ex)
+            _geralPersist.Update(model);
+
+            if (await _geralPersist.SaveChangesAsync())
             {
-                
-                throw new Exception(ex.Message);
+                var jogadorUpdate = await _jogadorPersit.GetByIdAsync(jogador.Id);
+                return _mapper.Map<JogadorDto>(jogadorUpdate);
             }
+            return null;
         }
 
         public async Task<bool> DeleteJogadorAsync(int jogadorId)
         {
-            try
-            {
-                var jogador = await _jogadorPersit.GetByIdAsync(jogadorId);
-                if (jogador == null) throw new Exception("Jogador para delete não encontrado.");
+            var jogador = await _jogadorPersit.GetByIdAsync(jogadorId)
+                ?? throw new Exception("Jogador para delete não encontrado.");
 
-                _geralPersist.Delete<Jogador>(jogador);
-                return (await _geralPersist.SaveChangesAsync());
-            }
-            catch (Exception ex)
-            {
-                
-                throw new Exception(ex.Message);
-            }
+            _geralPersist.Delete(jogador);
+            return await _geralPersist.SaveChangesAsync();
         }  
     }
 }

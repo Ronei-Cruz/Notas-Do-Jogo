@@ -4,10 +4,10 @@ namespace NotasDoJogo.Application.Contracts
 {
     public interface IPartidaService
     {
-        Task<PartidaDTO> GetPartidaByIdAsync(int partidaId);
-        Task<List<PartidaDTO>> GetPartidasAsync();
-        Task<PartidaDTO> AddPartidaAsync(PartidaDTO partida);
-        Task<PartidaDTO> UpdatePartidaAsync(int id, PartidaDTO partida);
+        Task<PartidaDto> GetPartidaByIdAsync(int partidaId);
+        Task<List<PartidaDto>> GetPartidasAsync();
+        Task<PartidaDto> AddPartidaAsync(PartidaDto partida);
+        Task<PartidaDto> UpdatePartidaAsync(int id, PartidaDto partida);
         Task <bool>DeletePartidaAsync(int partidaId);
     }
 }

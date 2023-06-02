@@ -16,13 +16,14 @@ namespace NotasDoJogo.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddNota([FromBody] NotaDTO notaDTO)
+        public async Task<IActionResult> AddNota([FromBody] NotaDto notaDto)
         {
             try
             {
-                var nota = await _notaService.AddNotaAsync(notaDTO);
+                var nota = await _notaService.AddNotaAsync(notaDto);
                 if(nota != null)
                     return CreatedAtAction(nameof(GetNotaById), new { id = nota.Id }, nota);
+
                 return BadRequest("Falha ao adicionar nota.");
             }   
             catch (Exception ex)
@@ -52,7 +53,7 @@ namespace NotasDoJogo.API.Controllers
         {
             try
             {
-                var notas = await _notaService.GetNotasByJogadorIdAsync(jogadorId, partidaId);
+                var notas = await _notaService.GetNotasPartidaIdByJogadorIdAsync(jogadorId, partidaId);
                 return Ok(notas);
             }
             catch (Exception ex)
@@ -81,6 +82,7 @@ namespace NotasDoJogo.API.Controllers
             try
             {
                 var notas = await _notaService.GetMediaPartidaAsync(partidaId);
+                if(notas == 0) return Ok("Partida não encotrada");
                 return Ok(notas);
             }
             catch (Exception ex)
@@ -116,7 +118,7 @@ namespace NotasDoJogo.API.Controllers
             }
             catch (Exception ex)
             {
-                 return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
             }
         }
     }

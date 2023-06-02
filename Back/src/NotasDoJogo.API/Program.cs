@@ -17,6 +17,7 @@ builder.Services.AddDbContext<NJContext>(options =>
 
 
 builder.Services.AddControllers();
+builder.Services.AddCors();
 
 // Configure AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -56,6 +57,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
+
+app.UseCors(cors => cors.AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowAnyOrigin()
+);
 
 app.MapControllers();
 

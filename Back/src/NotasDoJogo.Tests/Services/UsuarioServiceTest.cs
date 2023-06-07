@@ -110,5 +110,36 @@ namespace NotasDoJogo.Tests.Services
             mockUsuarioPersist.Verify(p => p.GetAllAsync(), Times.Once);
             mockMapper.Verify(m => m.Map<List<UsuarioDto>>(It.IsAny<List<Usuario>>()), Times.Once); 
         }
+
+        [Fact]
+        public async Task UpdateUsuarioAsync_ExistingUsuario_RetunsUpdatedUsuarioDto()
+        {
+            // Arrange
+            int usuarioId = 1;
+            var usuarioDto = new UsuarioDto { Id = usuarioId, Nome = "Novo Nome", Email = "novoemail@teste.com" };
+            var existingUsuario = new Usuario { Id = usuarioId, Nome = "Nome Antigo", Email = "emailantigo@teste.com" };
+
+            mockUsuarioPersist.Setup(p => p.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(existingUsuario);
+
+            mockGeralPersist.Setup(p => p.SaveChangesAsync()).ReturnsAsync(true);
+
+            mockMapper.Setup(m => m.Map(usuarioDto, existingUsuario)).Returns(existingUsuario);
+            mockMapper.Setup(m => m.Map<UsuarioDto>(existingUsuario)).Returns(usuarioDto);
+
+            // Act
+            var result = await usuarioService.UpdateUsuarioAsync(usuarioId, usuarioDto);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.Equal(usuarioId, result.Id);
+            Assert.Equal(usuarioDto.Nome, result.Nome);
+            Assert.Equal(usuarioDto.Email, result.Email);
+
+            mockUsuarioPersist.Verify(p => p.GetByIdAsync(It.IsAny<int>()), Times.Exactly(2));
+            mockGeralPersist.Verify(p => p.Update(existingUsuario), Times.Once);
+            mockGeralPersist.Verify(p => p.SaveChangesAsync(), Times.Once);
+            mockMapper.Verify(m => m.Map(usuarioDto, existingUsuario), Times.Once);
+
+        }
     }
 }

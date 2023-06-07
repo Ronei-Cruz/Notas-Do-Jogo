@@ -139,7 +139,26 @@ namespace NotasDoJogo.Tests.Services
             mockGeralPersist.Verify(p => p.Update(existingUsuario), Times.Once);
             mockGeralPersist.Verify(p => p.SaveChangesAsync(), Times.Once);
             mockMapper.Verify(m => m.Map(usuarioDto, existingUsuario), Times.Once);
+        }
 
+        [Fact]
+        public async Task DeleteUsuarioTest()
+        {
+            // Arrange
+
+            mockGeralPersist.Setup(p => p.Delete(It.IsAny<Usuario>()));
+            mockGeralPersist.Setup(p => p.SaveChangesAsync()).ReturnsAsync(true);
+
+            mockUsuarioPersist.Setup(p => p.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(new Usuario { Id = It.IsAny<int>() });
+
+            // Act
+            var result = await usuarioService.DeleteUsuarioAsync(It.IsAny<int>());
+
+            // Assert
+            Assert.True(result);
+            mockUsuarioPersist.Verify(p => p.GetByIdAsync(It.IsAny<int>()), Times.Once);
+            mockGeralPersist.Verify(p => p.Delete(It.IsAny<Usuario>()), Times.Once);
+            mockGeralPersist.Verify(p => p.SaveChangesAsync(), Times.Once);
         }
     }
 }

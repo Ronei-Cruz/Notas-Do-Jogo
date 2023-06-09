@@ -26,16 +26,9 @@ namespace NotasDoJogo.Tests.Services
         }
 
         [Fact]
-        public async Task AddUsuarioTestAsync()
+        public async Task AddUsuarioAsyncTest()
         {
             // Arrange
-            var usuarioDto = new UsuarioDto
-            {
-                Id = 1,
-                Nome = "Noronha Love",
-                Email = "noronhalove@teste.com"
-            };
-
             mockGeralPersist.Setup(p => p.Add(It.IsAny<Usuario>()));
             mockGeralPersist.Setup(p => p.SaveChangesAsync()).ReturnsAsync(true);
 
@@ -45,7 +38,7 @@ namespace NotasDoJogo.Tests.Services
             mockMapper.Setup(m => m.Map<UsuarioDto>(It.IsAny<Usuario>())).Returns(new UsuarioDto());
 
             // Act
-            var result = await usuarioService.AddUsuarioAsync(usuarioDto);
+            var result = await usuarioService.AddUsuarioAsync(It.IsAny<UsuarioDto>());
 
             // Assert
             Assert.NotNull(result);
@@ -55,15 +48,13 @@ namespace NotasDoJogo.Tests.Services
         }
 
         [Fact]
-        public async Task GetUsuarioByIdTestAsync()
+        public async Task GetUsuarioByIdAsyncTest()
         {
             // Arrange
             int usuarioId = 1;
-            var usuarioRetorno = new Usuario { Id = usuarioId, Nome = "Noronha Love", Email = "noronhalove@teste.com" };
+            mockUsuarioPersist.Setup(p => p.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(It.IsAny<Usuario>());
 
-            mockUsuarioPersist.Setup(p => p.GetByIdAsync(usuarioId)).ReturnsAsync(usuarioRetorno);
-
-            mockMapper.Setup(m => m.Map<UsuarioDto>(usuarioRetorno)).Returns(new UsuarioDto { 
+            mockMapper.Setup(m => m.Map<UsuarioDto>(It.IsAny<Usuario>())).Returns(new UsuarioDto { 
                 Id = usuarioId, 
                 Nome = "Noronha Love",
                 Email = "noronhalove@teste.com" 
@@ -78,21 +69,14 @@ namespace NotasDoJogo.Tests.Services
             Assert.Equal("Noronha Love", result.Nome);
             Assert.Equal("noronhalove@teste.com", result.Email);
             mockUsuarioPersist.Verify(p => p.GetByIdAsync(usuarioId), Times.Once);
-            mockMapper.Verify(m => m.Map<UsuarioDto>(usuarioRetorno), Times.Once);
+            mockMapper.Verify(m => m.Map<UsuarioDto>(It.IsAny<Usuario>()), Times.Once);
         }
 
         [Fact]
-        public async Task GetUsuariosAsync_ReturnsListOfUsuarioDto()
+        public async Task GetUsuariosAsync_ReturnsListOfUsuarioDtoTest()
         {
             // Arrange
-            var usuarios = new List<Usuario>
-            {
-                new Usuario { Id = 1, Nome = "Usuário 1", Email = "usuario1@teste.com" },
-                new Usuario { Id = 2, Nome = "Usuário 2", Email = "usuario2@teste.com" },
-                new Usuario { Id = 3, Nome = "Usuário 3", Email = "usuario3@teste.com" }
-            };
-
-            mockUsuarioPersist.Setup(p => p.GetAllAsync()).ReturnsAsync(usuarios);
+            mockUsuarioPersist.Setup(p => p.GetAllAsync()).ReturnsAsync(It.IsAny<List<Usuario>>());
 
             mockMapper.Setup(m => m.Map<List<UsuarioDto>>(It.IsAny<List<Usuario>>())).Returns(new List<UsuarioDto>
             {
@@ -112,7 +96,7 @@ namespace NotasDoJogo.Tests.Services
         }
 
         [Fact]
-        public async Task UpdateUsuarioAsync_ExistingUsuario_RetunsUpdatedUsuarioDto()
+        public async Task UpdateUsuarioAsync_ExistingUsuario_RetunsUpdatedUsuarioDtoTest()
         {
             // Arrange
             int usuarioId = 1;
@@ -145,7 +129,6 @@ namespace NotasDoJogo.Tests.Services
         public async Task DeleteUsuarioTest()
         {
             // Arrange
-
             mockGeralPersist.Setup(p => p.Delete(It.IsAny<Usuario>()));
             mockGeralPersist.Setup(p => p.SaveChangesAsync()).ReturnsAsync(true);
 

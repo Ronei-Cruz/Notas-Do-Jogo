@@ -135,7 +135,7 @@ namespace NotasDoJogo.Tests.Services
             var notas = new List<Nota>
             {
                 new Nota {Id = 1, JogadorId = jogadorId, UsuarioId = 3, PartidaId = partidaId, Valor = 7 },
-                new Nota {Id = 2, JogadorId = 2, UsuarioId = 2, PartidaId = partidaId, Valor = 5 },
+                new Nota {Id = 2, JogadorId = 1, UsuarioId = 2, PartidaId = partidaId, Valor = 5 },
                 new Nota {Id = 3, JogadorId = jogadorId, UsuarioId = 5, PartidaId = partidaId, Valor = 8 }
             };
 
@@ -155,6 +155,32 @@ namespace NotasDoJogo.Tests.Services
 
             mockNotaPersist.Verify(n => n.GetNotasPartidaIdByJogadorIdAsync(jogadorId, partidaId), Times.Once);
             mockMapper.Verify(m => m.Map<List<NotaDto>>(It.IsAny<List<Nota>>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetNotaCountByJogadorIdAsyncRetunMediaJogadorIdPerPartidaId()
+        {
+            // Arrange
+            int jogadorId = 2;
+            int partidaId = 1;
+
+            var notas = new List<Nota>
+            {
+                new Nota {Id = 1, JogadorId = jogadorId, UsuarioId = 3, PartidaId = partidaId, Valor = 7 },
+                new Nota {Id = 2, JogadorId = jogadorId, UsuarioId = 2, PartidaId = partidaId, Valor = 5 },
+                new Nota {Id = 3, JogadorId = jogadorId, UsuarioId = 5, PartidaId = partidaId, Valor = 8 }
+            };
+
+            mockNotaPersist.Setup(n => n.GetNotasPartidaIdByJogadorIdAsync(jogadorId, partidaId))
+                .ReturnsAsync(notas);
+            
+            // Act
+            var result = await notaService.GetNotaCountByJogadorIdAsync(jogadorId, partidaId);
+
+            // Assert
+            Assert.Equal(6.7, (double)result);
+
+            mockNotaPersist.Verify(n => n.GetNotasPartidaIdByJogadorIdAsync(jogadorId, partidaId), Times.Once);
         }
 
         [Fact]

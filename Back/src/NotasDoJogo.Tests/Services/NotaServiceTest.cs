@@ -140,11 +140,17 @@ namespace NotasDoJogo.Tests.Services
             };
 
             mockNotaPersist.Setup(n => n.GetNotasPartidaIdByJogadorIdAsync(jogadorId, partidaId)).ReturnsAsync(notas);
-            mockMapper.Setup(m => m.Map<List<NotaDto>>(notas)).Returns(new List<NotaDto>
-            {
-                new NotaDto {Id = 1, JogadorId = jogadorId, UsuarioId = 3, PartidaId = partidaId, Valor = 7 },
-                new NotaDto {Id = 3, JogadorId = jogadorId, UsuarioId = 5, PartidaId = partidaId, Valor = 8 }
-            });
+            mockMapper.Setup(m => m.Map<List<NotaDto>>(It.IsAny<List<Nota>>()))
+                .Returns((List<Nota> source) => source
+                    .Where(n => n.JogadorId == jogadorId && n.PartidaId == partidaId)
+                    .Select(n => new NotaDto 
+                    {
+                        Id = n.Id, 
+                        JogadorId = n.JogadorId, 
+                        UsuarioId = n.UsuarioId, 
+                        PartidaId = n.PartidaId, 
+                        Valor = n.Valor 
+                    }).ToList());
             
             // Act
             var result = await notaService.GetNotasPartidaIdByJogadorIdAsync(jogadorId, partidaId);

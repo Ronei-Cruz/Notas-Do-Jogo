@@ -24,6 +24,7 @@
     <ProjectReference Include="..\NotasDoJogo.Application\NotasDoJogo.Application.csproj" />
     <ProjectReference Include="..\NotasDoJogo.Persistence\NotasDoJogo.Persistence.csproj" />
     <ProjectReference Include="..\NotasDoJogo.Domain\NotasDoJogo.Domain.csproj" />
+    <ProjectReference Include="..\NotasDoJogo.API\NotasDoJogo.API.csproj" />
   </ItemGroup>
 
 </Project>

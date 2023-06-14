@@ -158,7 +158,7 @@ namespace NotasDoJogo.Tests.Services
         }
 
         [Fact]
-        public async Task GetNotaCountByJogadorIdAsyncRetunMediaJogadorIdPerPartidaId()
+        public async Task GetNotaCountByJogadorIdAsyncRetunMediaJogadorIdPerPartidaIdTest()
         {
             // Arrange
             int jogadorId = 2;
@@ -181,6 +181,30 @@ namespace NotasDoJogo.Tests.Services
             Assert.Equal(7.5, (double)result);
 
             mockNotaPersist.Verify(n => n.GetNotasPartidaIdByJogadorIdAsync(jogadorId, partidaId), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetMediaPartidaAsyncTest()
+        {
+            // Arrange
+            int partidaId = 1;
+            var notas = new List<Nota>
+            {
+                new Nota {Id = 1, JogadorId = 1, UsuarioId = 3, PartidaId = partidaId, Valor = 7 },
+                new Nota {Id = 2, JogadorId = 4, UsuarioId = 2, PartidaId = partidaId, Valor = 6 },
+                new Nota {Id = 3, JogadorId = 4, UsuarioId = 5, PartidaId = 2, Valor = 8 }
+            };
+        
+            mockNotaPersist.Setup(n => n.GetNotasByPartidaIdAsync(partidaId))
+                .ReturnsAsync(notas.Where(n => n.PartidaId == partidaId).ToList());
+
+            // Act
+            var result = await notaService.GetMediaPartidaAsync(partidaId);
+
+            // Assert
+            Assert.Equal(6.5, (double)result);
+
+            mockNotaPersist.Verify(n => n.GetNotasByPartidaIdAsync(partidaId), Times.Once);
         }
 
         [Fact]

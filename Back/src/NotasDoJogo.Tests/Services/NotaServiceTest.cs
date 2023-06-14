@@ -167,18 +167,18 @@ namespace NotasDoJogo.Tests.Services
             var notas = new List<Nota>
             {
                 new Nota {Id = 1, JogadorId = jogadorId, UsuarioId = 3, PartidaId = partidaId, Valor = 7 },
-                new Nota {Id = 2, JogadorId = jogadorId, UsuarioId = 2, PartidaId = partidaId, Valor = 5 },
+                new Nota {Id = 2, JogadorId = 4, UsuarioId = 2, PartidaId = partidaId, Valor = 5 },
                 new Nota {Id = 3, JogadorId = jogadorId, UsuarioId = 5, PartidaId = partidaId, Valor = 8 }
             };
 
             mockNotaPersist.Setup(n => n.GetNotasPartidaIdByJogadorIdAsync(jogadorId, partidaId))
-                .ReturnsAsync(notas);
+                .ReturnsAsync(notas.Where(n => n.JogadorId == jogadorId && n.PartidaId == partidaId).ToList());
             
             // Act
             var result = await notaService.GetNotaCountByJogadorIdAsync(jogadorId, partidaId);
 
             // Assert
-            Assert.Equal(6.7, (double)result);
+            Assert.Equal(7.5, (double)result);
 
             mockNotaPersist.Verify(n => n.GetNotasPartidaIdByJogadorIdAsync(jogadorId, partidaId), Times.Once);
         }

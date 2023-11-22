@@ -18,7 +18,7 @@ namespace NotasDoJogo.Persistence.Seeders
 
         private static void SeedJogadores(NJContext dbContext)
         {
-            var jogadores = new List<Jogador>
+            var jogadores = new List<JogadorResponse>
             {
                 new Jogador { Nome = "João Paulo", Posicao = "Goleiro", Idade = 27 },
                 new Jogador { Nome = "Gabriel Inocencio", Posicao = "Lateral", Idade = 28 },
@@ -40,7 +40,7 @@ namespace NotasDoJogo.Persistence.Seeders
 
         private static void SeedPartidas(NJContext dbContext)
         {
-            var partidas = new List<Partida>
+            var partidas = new List<PartidaResponse>
             {
                 new Partida {Jogo = "Bahia x Santos", Data = DateTime.ParseExact("2023-05-31", "yyyy-MM-dd", CultureInfo.InvariantCulture)},
                 new Partida {Jogo = "Santos x Internacional", Data = DateTime.ParseExact("2023-06-03", "yyyy-MM-dd", CultureInfo.InvariantCulture)},
@@ -53,7 +53,7 @@ namespace NotasDoJogo.Persistence.Seeders
 
         private static void SeedUsuarios(NJContext dbContext)
         {
-            var usuarios = new List<Usuario>
+            var usuarios = new List<UsuarioResponse>
             {
                 new Usuario { Nome = "Noronha Love", Email = "noronha@teste.com" },
                 new Usuario { Nome = "Murillo Tauro", Email = "murillo@teste.com" },
@@ -67,7 +67,7 @@ namespace NotasDoJogo.Persistence.Seeders
         private void SeedNotas(NJContext dbContext)
         {
             
-            var notas = new List<Nota>
+            var notas = new List<NotaResponse>
             {
                 new Nota {JogadorId = 1, UsuarioId = 1, PartidaId = 1, Valor = random.Next(4, 11) },
                 new Nota {JogadorId = 1, UsuarioId = 2, PartidaId = 1, Valor = random.Next(4, 11) },

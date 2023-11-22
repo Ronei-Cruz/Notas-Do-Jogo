@@ -1,5 +1,6 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using NotasDoJogo.Application.Contracts;
+using NotasDoJogo.Application.Commands.Request;
 using NotasDoJogo.Application.Dtos;
 
 namespace NotasDoJogo.API.Controllers
@@ -8,69 +9,54 @@ namespace NotasDoJogo.API.Controllers
     [Route("api/[controller]")]
     public class JogadorController : ControllerBase
     {
-        private readonly IJogadorService _jogadorService;
+        private readonly IMediator _mediator;
 
-        public JogadorController(IJogadorService jogadorService)
+        public JogadorController(IMediator mediator)
         {
-            _jogadorService = jogadorService;
+            _mediator = mediator;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddJogador([FromBody] JogadorDto jogadorDto)
+        [HttpPost("adicionar-jogador")]
+        public async Task<IActionResult> AdicionarJogador([FromBody] JogadorRequest request)
         {
-            try
-            {
-                var jogador = await _jogadorService.AddJogadorAsync(jogadorDto);
-                if (jogador != null)
-                {
-                    return CreatedAtAction(nameof(GetJogadorById), new { id = jogador.Id }, jogador);
-                }
-                return BadRequest("Falha ao adicionar o jogador.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
-            }
+            if (request == null)
+                return BadRequest("Request inválida");
+
+            var response = await _mediator.Send(request);
+
+            if (!response.Sucesso)
+                return BadRequest(response.MensagemErro = "Erro ao adicionar Jogador!");
+            
+            return Ok(response);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllJogadores()
+        [HttpGet("visualizar-jogadores")]
+        public async Task<IActionResult> VisualizarJogadores()
         {
-            try
-            {
-                var jogador = await _jogadorService.GetJogadoresAsync();
-                if (jogador != null)
-                {
-                    return Ok(jogador);
-                }
-                return NotFound("Jogador não encontrado.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
-            }
+            var response = await _mediator.Send(request);
+
+            if (!response.Sucesso)
+                return BadRequest(response.MensagemErro = "Erro ao adicionar Jogador!");
+            
+            return Ok(response);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetJogadorById(int id)
+        [HttpGet("visualizar-jogador/{id}")]
+        public async Task<IActionResult> VisualizarJogadorById(int id)
         {
-            try
-            {
-                var jogador = await _jogadorService.GetJogadorByIdAsync(id);
-                if (jogador != null)
-                {
-                    return Ok(jogador);
-                }
-                return NotFound("Jogador não encontrado.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
-            }
+            if (id == null)
+                return BadRequest("Request inválida");
+
+            var response = await _mediator.Send(request);
+
+            if (!response.Sucesso)
+                return BadRequest(response.MensagemErro = "Erro ao adicionar Jogador!");
+            
+            return Ok(response);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateJogador(int id, JogadorDto jogadorDto)
+        [HttpPut("editar-jogador/{id}")]
+        public async Task<IActionResult> EditarJogador(int id, JogadorDto jogadorDto)
         {
             try
             {
@@ -85,8 +71,8 @@ namespace NotasDoJogo.API.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteJogador(int id)
+        [HttpDelete("deletar-jogador/{id}")]
+        public async Task<IActionResult> DeletarJogador(int id)
         {
             try
             {

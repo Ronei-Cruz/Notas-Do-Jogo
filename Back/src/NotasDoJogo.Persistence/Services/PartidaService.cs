@@ -4,7 +4,7 @@ using NotasDoJogo.Application.Dtos;
 using NotasDoJogo.Domain.Models;
 using NotasDoJogo.Persistence.Contracts;
 
-namespace NotasDoJogo.Application.Services
+namespace NotasDoJogo.Persistence.Services
 {
     public class PartidaService : IPartidaService
     {

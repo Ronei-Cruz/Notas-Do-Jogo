@@ -1,39 +1,43 @@
-using AutoMapper;
+using NotasDoJogo.Application.Commands.Request;
+using NotasDoJogo.Application.Commands.Response;
 using NotasDoJogo.Application.Contracts;
-using NotasDoJogo.Application.Dtos;
-using NotasDoJogo.Domain.Models;
+using NotasDoJogo.Persistence.Contexts;
 using NotasDoJogo.Persistence.Contracts;
 
-namespace NotasDoJogo.Application.Services
+namespace NotasDoJogo.Persistence.Services
 {
     public class JogadorService : IJogadorService
     {
         private readonly IGeralPersist _geralPersist;
-        private readonly IJogadorPersist _jogadorPersit;
-        private readonly IMapper _mapper;
+        private readonly NJContext _context;
+        
 
-        public JogadorService(IGeralPersist geralPersist, IJogadorPersist jogadorPersit, IMapper mapper)
+        public JogadorService(IGeralPersist geralPersist)
         {
             _geralPersist = geralPersist;
-            _jogadorPersit = jogadorPersit;
-            _mapper = mapper;
         }
 
-        public async Task<JogadorDto> AddJogadorAsync(JogadorDto jogador)
+        public async Task<JogadorResponse> AddJogadorAsync(JogadorRequest request)
         {
-            var model = _mapper.Map<Jogador>(jogador);
-            _geralPersist.Add(model);
             var saveChangesResult = await _geralPersist.SaveChangesAsync();
 
             if (saveChangesResult)
             {
-                var jogadorRetorno = await _jogadorPersit.GetByIdAsync(model.Id);
-                return _mapper.Map<JogadorDto>(jogadorRetorno);
+                var jogadorRetorno = await _context.Jogadores.FindAsync(request.Id);
+                var response = new JogadorResponse
+                {
+                    Dados = jogadorRetorno
+                };
+                return response;
             }
-            return null;
+            return new JogadorResponse
+            { 
+                Sucesso = false, 
+                MensagemErro = "Falha ao salvar as alterações no banco de dados."
+            };
         }
 
-        public async Task<JogadorDto> GetJogadorByIdAsync(int jogadorId)
+        /* public async Task<JogadorDto> GetJogadorByIdAsync(int jogadorId)
         {
             var jogadorRetorno = await _jogadorPersit.GetByIdAsync(jogadorId);
             return _mapper.Map<JogadorDto>(jogadorRetorno);
@@ -70,6 +74,6 @@ namespace NotasDoJogo.Application.Services
 
             _geralPersist.Delete(jogador);
             return await _geralPersist.SaveChangesAsync();
-        }  
+        }  */ 
     }
 }

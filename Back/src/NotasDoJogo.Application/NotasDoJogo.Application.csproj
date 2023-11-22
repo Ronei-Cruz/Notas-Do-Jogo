@@ -1,18 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-  <ItemGroup>
-    <ProjectReference Include="..\NotasDoJogo.Domain\NotasDoJogo.Domain.csproj" />
-    <ProjectReference Include="..\NotasDoJogo.Persistence\NotasDoJogo.Persistence.csproj" />
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="MediatR" Version="12.1.1" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
   </ItemGroup>
-
+  <ItemGroup>
+    <ProjectReference Include="..\NotasDoJogo.Domain\NotasDoJogo.Domain.csproj" />
+  </ItemGroup>
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
   </PropertyGroup>
-
 </Project>

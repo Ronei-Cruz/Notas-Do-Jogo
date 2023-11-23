@@ -1,9 +1,9 @@
 using AutoMapper;
 using Moq;
 using NotasDoJogo.Application.Dtos;
-using NotasDoJogo.Application.Services;
 using NotasDoJogo.Domain.Models;
 using NotasDoJogo.Persistence.Contracts;
+using NotasDoJogo.Persistence.Services;
 using Xunit;
 
 namespace NotasDoJogo.Tests.Services

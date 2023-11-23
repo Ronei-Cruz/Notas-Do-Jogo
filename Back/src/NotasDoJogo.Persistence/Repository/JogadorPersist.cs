@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using NotasDoJogo.Application.Commands.Response;
 using NotasDoJogo.Domain.Models;
 using NotasDoJogo.Persistence.Contexts;
 using NotasDoJogo.Persistence.Contracts;

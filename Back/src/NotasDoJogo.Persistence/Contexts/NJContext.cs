@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NotasDoJogo.Domain.Models;
+using NotasDoJogo.Application.Commands.Response;
 
 namespace NotasDoJogo.Persistence.Contexts
 {
@@ -9,24 +10,24 @@ namespace NotasDoJogo.Persistence.Contexts
         {
         }
 
-        public DbSet<UsuarioResponse> Usuarios { get; set; }
-        public DbSet<JogadorResponse> Jogadores { get; set; }
-        public DbSet<PartidaResponse> Partidas { get; set; }
-        public DbSet<NotaResponse> Notas { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Jogador> Jogadores { get; set; }
+        public DbSet<Partida> Partidas { get; set; }
+        public DbSet<Nota> Notas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<JogadorResponse>()
+            modelBuilder.Entity<Jogador>()
                 .HasMany(j => j.Notas)
                 .WithOne(n => n.Jogador)
                 .HasForeignKey(n => n.JogadorId);
 
-            modelBuilder.Entity<UsuarioResponse>()
+            modelBuilder.Entity<Usuario>()
                 .HasMany(u => u.Notas)
                 .WithOne(n => n.Usuario)
                 .HasForeignKey(n => n.UsuarioId);
 
-            modelBuilder.Entity<PartidaResponse>()
+            modelBuilder.Entity<Partida>()
                 .HasMany(p => p.Notas)
                 .WithOne(n => n.Partida)
                 .HasForeignKey(n => n.PartidaId);

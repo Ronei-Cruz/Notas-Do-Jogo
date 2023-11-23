@@ -10,6 +10,5 @@ namespace NotasDoJogo.Application.Commands.Request
         public string Posicao { get; set; }
         public int NumeroCamisa { get; set; }
         public int Idade { get; set; }
-        public List<NotasRequest> Notas { get; set; }
     }
 }

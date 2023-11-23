@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using NotasDoJogo.Application.Contracts;
-using NotasDoJogo.Application.Services;
 using NotasDoJogo.Persistence.Repository;
 using NotasDoJogo.Persistence.Contexts;
 using NotasDoJogo.Persistence.Contracts;
 using NotasDoJogo.Persistence.Seeders;
+using NotasDoJogo.Persistence.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

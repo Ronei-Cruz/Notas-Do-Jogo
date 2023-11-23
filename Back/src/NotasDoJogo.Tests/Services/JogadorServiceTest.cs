@@ -1,9 +1,11 @@
 using AutoMapper;
 using Moq;
+using NotasDoJogo.Application.Commands.Request;
 using NotasDoJogo.Application.Dtos;
-using NotasDoJogo.Application.Services;
 using NotasDoJogo.Domain.Models;
+using NotasDoJogo.Persistence.Contexts;
 using NotasDoJogo.Persistence.Contracts;
+using NotasDoJogo.Persistence.Services;
 using Xunit;
 
 namespace NotasDoJogo.Tests.Services
@@ -11,6 +13,7 @@ namespace NotasDoJogo.Tests.Services
     public class JogadorServiceTest
     {
         private readonly JogadorService jogadorService;
+        private readonly NJContext nJContext;
         private readonly Mock<IGeralPersist> mockGeralPersist;
         private readonly Mock<IJogadorPersist> mockJogadorPersist;
         private readonly Mock<IMapper> mockMapper;
@@ -20,7 +23,7 @@ namespace NotasDoJogo.Tests.Services
             mockJogadorPersist = new Mock<IJogadorPersist>();
             mockMapper = new Mock<IMapper>();
 
-            jogadorService = new JogadorService(mockGeralPersist.Object, mockJogadorPersist.Object, mockMapper.Object);
+            jogadorService = new JogadorService(mockGeralPersist.Object, mockMapper.Object, nJContext);
         }
 
         [Fact]
@@ -36,7 +39,7 @@ namespace NotasDoJogo.Tests.Services
             mockMapper.Setup(m => m.Map<JogadorDto>(It.IsAny<Jogador>())).Returns(new JogadorDto());
 
             // Act
-            var result = await jogadorService.AddJogadorAsync(It.IsAny<JogadorDto>());
+            var result = await jogadorService.AddJogadorAsync(It.IsAny<JogadorRequest>());
 
             // Assert
             Assert.NotNull(result);
@@ -100,14 +103,14 @@ namespace NotasDoJogo.Tests.Services
         {
             // Arrange
             int jogadorId = 1;
-            var jogadorDto = new JogadorDto { Id = jogadorId, Nome = "Neymar", Posicao = "Atacante", Idade = 32 };
+            var jogadorDto = new JogadorRequest { Id = jogadorId, Nome = "Neymar", Posicao = "Atacante", Idade = 32 };
             var existingJogador = new Jogador { Id = jogadorId, Nome = "Messi", Posicao = "Atacante", Idade = 36 };
 
             mockJogadorPersist.Setup(j => j.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(existingJogador);
             mockGeralPersist.Setup(g => g.SaveChangesAsync()).ReturnsAsync(true);
 
             mockMapper.Setup(m => m.Map(jogadorDto, existingJogador)).Returns(existingJogador);
-            mockMapper.Setup(m => m.Map<JogadorDto>(existingJogador)).Returns(jogadorDto);
+            mockMapper.Setup(m => m.Map<JogadorRequest>(existingJogador)).Returns(jogadorDto);
 
             // Act
             var result = await jogadorService.UpdateJogadorAsync(jogadorId, jogadorDto);

@@ -7,7 +7,6 @@ namespace NotasDoJogo.Application.Commands.Response
         public string Posicao { get; set; }
         public int Idade { get; set; }
         public int NumeroCamisa { get; set; }
-        public List<NotaResponse> Notas { get; set; }
 
     }
 }

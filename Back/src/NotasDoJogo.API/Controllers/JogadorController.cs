@@ -1,7 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using NotasDoJogo.Application.Commands.Request;
-using NotasDoJogo.Application.Dtos;
 
 namespace NotasDoJogo.API.Controllers
 {
@@ -33,21 +32,21 @@ namespace NotasDoJogo.API.Controllers
         [HttpGet("visualizar-jogadores")]
         public async Task<IActionResult> VisualizarJogadores()
         {
-            var response = await _mediator.Send(request);
+            var response = await _mediator.Send(new VisualizarJogadoresQuery ());
 
-            if (!response.Sucesso)
-                return BadRequest(response.MensagemErro = "Erro ao adicionar Jogador!");
+            if (response.IsNullOrEmpty())
+                return BadRequest("Erro ao visualizar jogadores!");
             
             return Ok(response);
         }
 
-        [HttpGet("visualizar-jogador/{id}")]
+        /* [HttpGet("visualizar-jogador/{id}")]
         public async Task<IActionResult> VisualizarJogadorById(int id)
         {
             if (id == null)
                 return BadRequest("Request inválida");
 
-            var response = await _mediator.Send(request);
+            var response = await _mediator.Send(id);
 
             if (!response.Sucesso)
                 return BadRequest(response.MensagemErro = "Erro ao adicionar Jogador!");
@@ -56,7 +55,7 @@ namespace NotasDoJogo.API.Controllers
         }
 
         [HttpPut("editar-jogador/{id}")]
-        public async Task<IActionResult> EditarJogador(int id, JogadorDto jogadorDto)
+        public async Task<IActionResult> EditarJogador(int id, JogadorRequest request)
         {
             try
             {
@@ -86,6 +85,14 @@ namespace NotasDoJogo.API.Controllers
             {
                  return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
             }
+        } */
+    }
+
+    public static class EnumerableExtensions
+    {
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T> enumerable)
+        {
+            return enumerable == null || !enumerable.Any();
         }
     }
 }

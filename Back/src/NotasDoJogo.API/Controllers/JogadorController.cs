@@ -1,6 +1,7 @@
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using NotasDoJogo.Application.Commands.Request;
+using NotasDoJogo.Application;
+using MediatR;
 
 namespace NotasDoJogo.API.Controllers
 {
@@ -24,7 +25,7 @@ namespace NotasDoJogo.API.Controllers
             var response = await _mediator.Send(request);
 
             if (!response.Sucesso)
-                return BadRequest(response.MensagemErro = "Erro ao adicionar Jogador!");
+                return BadRequest("Erro ao adicionar Jogador!");
             
             return Ok(response);
         }
@@ -86,13 +87,5 @@ namespace NotasDoJogo.API.Controllers
                  return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
             }
         } */
-    }
-
-    public static class EnumerableExtensions
-    {
-        public static bool IsNullOrEmpty<T>(this IEnumerable<T> enumerable)
-        {
-            return enumerable == null || !enumerable.Any();
-        }
     }
 }

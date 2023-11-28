@@ -28,8 +28,14 @@ namespace NotasDoJogo.Persistence.Migrations
                     b.Property<int>("Idade")
                         .HasColumnType("int");
 
+                    b.Property<string>("Nacionalidade")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Nome")
                         .HasColumnType("longtext");
+
+                    b.Property<int>("NumeroCamisa")
+                        .HasColumnType("int");
 
                     b.Property<string>("Posicao")
                         .HasColumnType("longtext");

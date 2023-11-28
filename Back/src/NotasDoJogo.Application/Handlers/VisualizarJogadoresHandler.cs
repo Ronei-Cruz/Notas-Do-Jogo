@@ -23,7 +23,7 @@ public class VisualizarJogadoresHandler : IRequestHandler<VisualizarJogadoresQue
         }
         catch (Exception ex)
         {
-            throw new ApplicationException("Erro ao lançar a solicitação: ", ex);
+            throw new ApplicationException("Erro ao visualizar a jogadores: ", ex);
         }
     }
 }

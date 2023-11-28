@@ -1,8 +1,11 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NotasDoJogo.Application.Commands;
 using NotasDoJogo.Application.Commands.Request;
 using NotasDoJogo.Application.Commands.Response;
 using NotasDoJogo.Application.Contracts;
+using NotasDoJogo.Domain.Models;
 using NotasDoJogo.Persistence.Contexts;
 using NotasDoJogo.Persistence.Contracts;
 
@@ -24,51 +27,54 @@ namespace NotasDoJogo.Persistence.Services
 
         public async Task<JogadorResponse> AddJogadorAsync(JogadorRequest request)
         {
+            var jogador = _mapper.Map<Jogador>(request);
+            _geralPersist.Add(jogador);
+
             var saveChangesResult = await _geralPersist.SaveChangesAsync();
 
             if (saveChangesResult)
             {
-                var jogadorRetorno = await _context.Jogadores.FindAsync(request.Id);
-                var response = new JogadorResponse
-                {
-                    Dados = jogadorRetorno
-                };
+                var jogadorRetorno = await _context.Jogadores.FindAsync(jogador.Id);
+                var response = _mapper.Map<JogadorResponse>(jogadorRetorno);
                 return response;
             }
-            return new JogadorResponse
-            { 
-                Sucesso = false, 
-                MensagemErro = "Falha ao salvar as alterações no banco de dados."
-            };
-        }
-
-        public async Task<JogadorResponse> GetJogadorByIdAsync(int jogadorId)
-        {
-            var jogadorRetorno = await _context.Jogadores.FindAsync(jogadorId);
-            return _mapper.Map<JogadorResponse>(jogadorRetorno);
+            return new JogadorResponse { Sucesso = false } ;
         }
 
         public async Task<List<JogadorResponse>> GetJogadoresAsync()
         {
-            var jogadorRetorno = await _context.Jogadores.ToListAsync();
-            return _mapper.Map<List<JogadorResponse>>(jogadorRetorno);
+            var jogadores = await _context.Jogadores.ToListAsync();
+            var response = _mapper.Map<List<JogadorResponse>>(jogadores);
+
+            return response;
+        }
+
+        public async Task<JogadorResponse> GetJogadorByIdAsync(int jogadorId)
+        {
+            var jogador = await _context.Jogadores.FindAsync(jogadorId);
+            var response = _mapper.Map<JogadorResponse>(jogador);
+            return response;
         }
 
         public async Task<JogadorResponse> UpdateJogadorAsync(int id, JogadorRequest jogador)
-        {
-            var model = await _context.Jogadores.FindAsync(id);
-            if (jogador == null) return null;
+        {            
+            var jogadorRetorno = await _context.Jogadores.FindAsync(id);     
 
-            jogador.Id = model.Id;
+            if (jogadorRetorno == null) 
+                return new JogadorResponse() { MensagemErro = "Jogador não existe!" };       
 
-            _geralPersist.Update(model);
+            jogador.Id = jogadorRetorno.Id;
+
+            _geralPersist.Update(jogadorRetorno);
 
             if (await _geralPersist.SaveChangesAsync())
             {
                 var jogadorUpdate = await _context.Jogadores.FindAsync(jogador.Id);
-                return _mapper.Map<JogadorResponse>(jogadorUpdate);
+                return new JogadorResponse() { //Dados = jogadorUpdate
+                                              };
             }
-            return null;
+
+            return new JogadorResponse() { MensagemErro = "Erro desconhecido ao atualizar o jogador" };
         }
 
         public async Task<bool> DeleteJogadorAsync(int jogadorId)

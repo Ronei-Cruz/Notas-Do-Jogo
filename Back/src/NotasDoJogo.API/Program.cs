@@ -5,8 +5,17 @@ using NotasDoJogo.Persistence.Contexts;
 using NotasDoJogo.Persistence.Contracts;
 using NotasDoJogo.Persistence.Seeders;
 using NotasDoJogo.Persistence.Services;
+using MediatR;
+using NotasDoJogo.Application.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddMediatR
+    (
+        typeof(Program).Assembly,
+        typeof(AdicionarJogadorHandler).Assembly,
+        typeof(VisualizarJogadoresHandler).Assembly
+    );
 
 // Add services to the container.
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");

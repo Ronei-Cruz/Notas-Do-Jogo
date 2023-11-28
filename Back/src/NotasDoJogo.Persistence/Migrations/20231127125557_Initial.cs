@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace NotasDoJogo.Persistence.Migrations
 {
-    public partial class InitialDb : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -23,7 +23,10 @@ namespace NotasDoJogo.Persistence.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Posicao = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Idade = table.Column<int>(type: "int", nullable: false)
+                    Idade = table.Column<int>(type: "int", nullable: false),
+                    Nacionalidade = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    NumeroCamisa = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

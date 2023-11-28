@@ -20,7 +20,7 @@ namespace NotasDoJogo.Persistence.Seeders
         {
             var jogadores = new List<Jogador>
             {
-                new Jogador { Nome = "João Paulo", Posicao = "Goleiro", Idade = 27 },
+                new Jogador { Nome = "João Paulo", Posicao = "Goleiro", Idade = 27, Nacionalidade = "Brasileiro", NumeroCamisa = 34 },
                 new Jogador { Nome = "Gabriel Inocencio", Posicao = "Lateral", Idade = 28 },
                 new Jogador { Nome = "Lucas Pires", Posicao = "Lateral", Idade = 22 },
                 new Jogador { Nome = "Messias", Posicao = "Zagueiro", Idade = 28 },

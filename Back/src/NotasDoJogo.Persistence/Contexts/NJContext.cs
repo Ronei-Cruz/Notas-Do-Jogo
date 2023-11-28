@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using NotasDoJogo.Domain.Models;
-using NotasDoJogo.Application.Commands.Response;
 
 namespace NotasDoJogo.Persistence.Contexts
 {
@@ -31,7 +30,6 @@ namespace NotasDoJogo.Persistence.Contexts
                 .HasMany(p => p.Notas)
                 .WithOne(n => n.Partida)
                 .HasForeignKey(n => n.PartidaId);
-        }
-        
+        }    
     }
 }

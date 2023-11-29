@@ -2,8 +2,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NotasDoJogo.Application.Commands;
-using NotasDoJogo.Application.Commands.Request;
-using NotasDoJogo.Application.Commands.Response;
+using NotasDoJogo.Application.Commands.Jogador.Request;
+using NotasDoJogo.Application.Commands.Jogador.Response;
 using NotasDoJogo.Application.Contracts;
 using NotasDoJogo.Domain.Models;
 using NotasDoJogo.Persistence.Contexts;
@@ -56,25 +56,26 @@ namespace NotasDoJogo.Persistence.Services
             return response;
         }
 
-        public async Task<JogadorResponse> UpdateJogadorAsync(int id, JogadorRequest jogador)
+        public async Task<JogadorResponse> EditarJogadorAsync(int id, JogadorRequest request)
         {            
             var jogadorRetorno = await _context.Jogadores.FindAsync(id);     
 
             if (jogadorRetorno == null) 
-                return new JogadorResponse() { MensagemErro = "Jogador não existe!" };       
+                return new JogadorResponse() { Sucesso = false };       
 
-            jogador.Id = jogadorRetorno.Id;
+            request.Id = jogadorRetorno.Id;
+            _mapper.Map(request, jogadorRetorno);
 
             _geralPersist.Update(jogadorRetorno);
 
             if (await _geralPersist.SaveChangesAsync())
             {
-                var jogadorUpdate = await _context.Jogadores.FindAsync(jogador.Id);
-                return new JogadorResponse() { //Dados = jogadorUpdate
-                                              };
+                var jogadorUpdate = await _context.Jogadores.FindAsync(request.Id);
+                var response = _mapper.Map<JogadorResponse>(jogadorUpdate);
+                return response;
             }
 
-            return new JogadorResponse() { MensagemErro = "Erro desconhecido ao atualizar o jogador" };
+            return new JogadorResponse() { Sucesso = false };
         }
 
         public async Task<bool> DeleteJogadorAsync(int jogadorId)

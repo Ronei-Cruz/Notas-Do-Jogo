@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using NotasDoJogo.Application.Commands.Request;
 using NotasDoJogo.Application;
 using MediatR;
+using NotasDoJogo.Application.Commands.Jogador.Request;
+using NotasDoJogo.Application.Commands.Jogador.Response;
+using NotasDoJogo.Application.Commands.Queries;
 
 namespace NotasDoJogo.API.Controllers
 {
@@ -33,7 +36,7 @@ namespace NotasDoJogo.API.Controllers
         [HttpGet("visualizar-jogadores")]
         public async Task<IActionResult> VisualizarJogadores()
         {
-            var response = await _mediator.Send(new VisualizarJogadoresQuery ());
+            var response = await _mediator.Send(new VisualizarItensQuery<JogadorResponse>());
 
             if (response.IsNullOrEmpty())
                 return BadRequest("Erro ao visualizar jogadores!");
@@ -41,16 +44,16 @@ namespace NotasDoJogo.API.Controllers
             return Ok(response);
         }
 
-        /* [HttpGet("visualizar-jogador/{id}")]
-        public async Task<IActionResult> VisualizarJogadorById(int id)
+        [HttpGet("perfil-jogador/{id}")]
+        public async Task<IActionResult> PerfilJogadorById(int id)
         {
-            if (id == null)
-                return BadRequest("Request inválida");
+            if (id <= 0)
+                return BadRequest("Id inválido");
 
-            var response = await _mediator.Send(id);
+            var response = await _mediator.Send(new ObterItemQuery<JogadorResponse>(id));
 
             if (!response.Sucesso)
-                return BadRequest(response.MensagemErro = "Erro ao adicionar Jogador!");
+                return BadRequest("Erro ao visualizar perfil do jogador!");
             
             return Ok(response);
         }
@@ -58,20 +61,25 @@ namespace NotasDoJogo.API.Controllers
         [HttpPut("editar-jogador/{id}")]
         public async Task<IActionResult> EditarJogador(int id, JogadorRequest request)
         {
-            try
+            if (id <= 0 || request == null) 
+                return BadRequest("Request inválida");
+
+            var jogador = new EditarItemQuery<JogadorRequest, JogadorResponse>
             {
-                var jogador = await _jogadorService.UpdateJogadorAsync(id, jogadorDto);
-                if (jogador == null) return BadRequest("Erro ao tentar atualizar jogador.");
-                return Ok(jogador);
-            }
-            catch (Exception ex)
-            {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
-                $"Erro ao tentar atualizar jogador. Erro {ex.Message}");
-            }
+                Id = id,
+                Request = request
+            };
+
+            var response = await _mediator.Send(jogador);
+
+            if (!response.Sucesso)
+                return BadRequest("Erro ao editar perfil do jogador!");
+
+            return Ok(response);
+
         }
 
-        [HttpDelete("deletar-jogador/{id}")]
+        /*[HttpDelete("deletar-jogador/{id}")]
         public async Task<IActionResult> DeletarJogador(int id)
         {
             try

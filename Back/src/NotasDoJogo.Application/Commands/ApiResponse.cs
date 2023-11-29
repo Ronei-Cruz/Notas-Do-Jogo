@@ -6,7 +6,6 @@ namespace NotasDoJogo.Application.Commands
     {
         [JsonIgnore]
         public bool Sucesso { get; set; } = true;
-        //public object Dados { get; set; }
         [JsonIgnore]
         public string MensagemErro { get; set; }
     }

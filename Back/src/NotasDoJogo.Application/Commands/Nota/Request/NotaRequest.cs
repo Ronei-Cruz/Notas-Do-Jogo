@@ -1,7 +1,7 @@
 using MediatR;
-using NotasDoJogo.Application.Commands.Response;
+using NotasDoJogo.Application.Commands.Nota.Response;
 
-namespace NotasDoJogo.Application.Commands.Request;
+namespace NotasDoJogo.Application.Commands.Nota.Request;
 
 public class NotaRequest : IRequest<NotaResponse>
 {

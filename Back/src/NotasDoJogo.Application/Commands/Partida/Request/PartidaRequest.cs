@@ -1,7 +1,7 @@
 using MediatR;
-using NotasDoJogo.Application.Commands.Response;
+using NotasDoJogo.Application.Commands.Partida.Response;
 
-namespace NotasDoJogo.Application.Commands.Request;
+namespace NotasDoJogo.Application.Commands.Partida.Request;
 
 public class PartidaRequest : IRequest<PartidaResponse>
 {

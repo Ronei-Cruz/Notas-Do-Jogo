@@ -1,4 +1,6 @@
-namespace NotasDoJogo.Application.Commands.Response;
+using NotasDoJogo.Application.Commands.Nota.Response;
+
+namespace NotasDoJogo.Application.Commands.Usuario.Response;
 
 public class UsuarioResponse : ApiResponse
 {

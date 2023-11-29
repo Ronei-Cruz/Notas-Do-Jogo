@@ -1,21 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using NotasDoJogo.Application.Contracts;
-using NotasDoJogo.Persistence.Repository;
 using NotasDoJogo.Persistence.Contexts;
-using NotasDoJogo.Persistence.Contracts;
 using NotasDoJogo.Persistence.Seeders;
-using NotasDoJogo.Persistence.Services;
-using MediatR;
-using NotasDoJogo.Application.Handlers;
+using NotasDoJogo.API.ConfigDependencies;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddMediatR
-    (
-        typeof(Program).Assembly,
-        typeof(AdicionarJogadorHandler).Assembly,
-        typeof(VisualizarJogadoresHandler).Assembly
-    );
+builder.Services.AddApplicationDependencies();
 
 // Add services to the container.
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -31,15 +21,6 @@ builder.Services.AddCors();
 // Configure AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddScoped<IGeralPersist, GeralPersist>();
-builder.Services.AddScoped<IJogadorService, JogadorService>();
-builder.Services.AddScoped<IJogadorPersist, JogadorPersist>();
-builder.Services.AddScoped<IPartidaService, PartidaService>();
-builder.Services.AddScoped<IPartidaPersist, PartidaPersist>();
-builder.Services.AddScoped<IUsuarioService, UsuarioService>();
-builder.Services.AddScoped<IUsuarioPersist, UsuarioPersist>();
-builder.Services.AddScoped<INotaService, NotaService>();
-builder.Services.AddScoped<INotaPersist, NotaPersist>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

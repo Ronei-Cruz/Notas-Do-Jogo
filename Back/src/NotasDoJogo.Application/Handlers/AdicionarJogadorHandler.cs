@@ -1,6 +1,6 @@
 using MediatR;
-using NotasDoJogo.Application.Commands.Request;
-using NotasDoJogo.Application.Commands.Response;
+using NotasDoJogo.Application.Commands.Jogador.Request;
+using NotasDoJogo.Application.Commands.Jogador.Response;
 using NotasDoJogo.Application.Contracts;
 
 namespace NotasDoJogo.Application.Handlers

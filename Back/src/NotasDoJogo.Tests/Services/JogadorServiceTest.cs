@@ -1,6 +1,6 @@
 using AutoMapper;
 using Moq;
-using NotasDoJogo.Application.Commands.Request;
+using NotasDoJogo.Application.Commands.Jogador.Request;
 using NotasDoJogo.Application.Dtos;
 using NotasDoJogo.Domain.Models;
 using NotasDoJogo.Persistence.Contexts;
@@ -113,7 +113,7 @@ namespace NotasDoJogo.Tests.Services
             mockMapper.Setup(m => m.Map<JogadorRequest>(existingJogador)).Returns(jogadorDto);
 
             // Act
-            var result = await jogadorService.UpdateJogadorAsync(jogadorId, jogadorDto);
+            var result = await jogadorService.EditarJogadorAsync(jogadorId, jogadorDto);
 
             // Assert
             Assert.NotNull(result);

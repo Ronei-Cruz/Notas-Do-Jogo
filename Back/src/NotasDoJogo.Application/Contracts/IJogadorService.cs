@@ -1,5 +1,5 @@
-using NotasDoJogo.Application.Commands.Request;
-using NotasDoJogo.Application.Commands.Response;
+using NotasDoJogo.Application.Commands.Jogador.Request;
+using NotasDoJogo.Application.Commands.Jogador.Response;
 using NotasDoJogo.Application.Dtos;
 
 namespace NotasDoJogo.Application.Contracts
@@ -9,7 +9,7 @@ namespace NotasDoJogo.Application.Contracts
         Task<JogadorResponse> GetJogadorByIdAsync(int jogadorId);
         Task<List<JogadorResponse>> GetJogadoresAsync();
         Task<JogadorResponse> AddJogadorAsync(JogadorRequest request);
-        Task<JogadorResponse> UpdateJogadorAsync(int id, JogadorRequest jogador);
+        Task<JogadorResponse> EditarJogadorAsync(int id, JogadorRequest jogador);
         Task <bool>DeleteJogadorAsync(int jogadorId);
         
     }

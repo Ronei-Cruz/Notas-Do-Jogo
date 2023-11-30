@@ -1,7 +1,5 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NotasDoJogo.Application.Commands;
 using NotasDoJogo.Application.Commands.Jogador.Request;
 using NotasDoJogo.Application.Commands.Jogador.Response;
 using NotasDoJogo.Application.Contracts;
@@ -78,13 +76,16 @@ namespace NotasDoJogo.Persistence.Services
             return new JogadorResponse() { Sucesso = false };
         }
 
-        public async Task<bool> DeleteJogadorAsync(int jogadorId)
+        public async Task<JogadorResponse> DeleteJogadorAsync(int jogadorId)
         {
-            var jogador = await _context.Jogadores.FindAsync(jogadorId)
+            var response = await _context.Jogadores.FindAsync(jogadorId)
                 ?? throw new Exception("Jogador para delete não encontrado.");
 
-            _geralPersist.Delete(jogador);
-            return await _geralPersist.SaveChangesAsync();
+            _geralPersist.Delete(response);
+
+            await _geralPersist.SaveChangesAsync();
+
+            return _mapper.Map<JogadorResponse>(response);
         } 
     }
 }

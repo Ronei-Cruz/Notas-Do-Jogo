@@ -79,21 +79,18 @@ namespace NotasDoJogo.API.Controllers
 
         }
 
-        /*[HttpDelete("deletar-jogador/{id}")]
+       [HttpDelete("deletar-jogador/{id}")]
         public async Task<IActionResult> DeletarJogador(int id)
         {
-            try
-            {
-                var jogador = await _jogadorService.GetJogadorByIdAsync(id);
-                if (jogador == null) return NoContent();
+            if (id <= 0)
+                return BadRequest("Id inválido");
 
-                return await _jogadorService.DeleteJogadorAsync(id) ? Ok(new {message = "Deletado."}) :
-                    throw new Exception("Ocorreu um problema não especifico ao tentar deletar Jogador.");
-            }
-            catch (Exception ex)
-            {
-                 return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
-            }
-        } */
+            var response = await _mediator.Send(new DeletarItemQuery<JogadorResponse>(id));
+
+            if (!response.Sucesso)
+                return BadRequest("Erro ao deletar perfil do jogador!");
+
+            return Ok(response.Mensagem = "Jogador deletado com Sucesso!");
+        }
     }
 }

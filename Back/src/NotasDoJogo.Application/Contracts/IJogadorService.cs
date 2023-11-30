@@ -10,7 +10,7 @@ namespace NotasDoJogo.Application.Contracts
         Task<List<JogadorResponse>> GetJogadoresAsync();
         Task<JogadorResponse> AddJogadorAsync(JogadorRequest request);
         Task<JogadorResponse> EditarJogadorAsync(int id, JogadorRequest jogador);
-        Task <bool>DeleteJogadorAsync(int jogadorId);
+        Task <JogadorResponse>DeleteJogadorAsync(int jogadorId);
         
     }
 }

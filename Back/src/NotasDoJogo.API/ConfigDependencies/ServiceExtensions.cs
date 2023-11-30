@@ -17,13 +17,14 @@ namespace NotasDoJogo.API.ConfigDependencies
                 typeof(Program).Assembly,
                 typeof(AdicionarJogadorHandler).Assembly, 
                 typeof(VisualizarJogadoresHandler).Assembly,
-                typeof(PerfilJogadorHandler).Assembly
+                typeof(PerfilJogadorHandler).Assembly,
+                typeof(EditarPerfilJogadorHandler).Assembly,
+                typeof(DeletarPerfilJogadorHandler).Assembly
             );
             #endregion
 
             #region PERSIST
             services.AddScoped<IGeralPersist, GeralPersist>();
-            services.AddScoped<IJogadorPersist, JogadorPersist>();
             services.AddScoped<IPartidaPersist, PartidaPersist>();
             services.AddScoped<INotaPersist, NotaPersist>();
             #endregion

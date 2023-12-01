@@ -1,13 +1,15 @@
+using NotasDoJogo.Application.Commands.Usuario.Request;
+using NotasDoJogo.Application.Commands.Usuario.Response;
 using NotasDoJogo.Application.Dtos;
 
 namespace NotasDoJogo.Application.Contracts
 {
     public interface IUsuarioService
     {
-        Task<UsuarioDto> AddUsuarioAsync(UsuarioDto usuario);
-        Task<UsuarioDto> GetUsuarioByIdAsync(int usuarioId);
-        Task<List<UsuarioDto>> GetUsuariosAsync();
-        Task<UsuarioDto> UpdateUsuarioAsync(int id, UsuarioDto usuario);
-        Task <bool>DeleteUsuarioAsync(int usuarioId);
+        Task<UsuarioResponse> AdicionarUsuarioAsync(UsuarioRequest request);
+        Task<UsuarioResponse> GetUsuarioByIdAsync(int usuarioId);
+        Task<List<UsuarioResponse>> GetUsuariosAsync();
+        Task<UsuarioResponse> EditarUsuarioAsync(int id, UsuarioRequest request);
+        Task <UsuarioResponse> DeleteUsuarioAsync(int usuarioId);
     }
 }

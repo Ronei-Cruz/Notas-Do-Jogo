@@ -4,7 +4,7 @@ using NotasDoJogo.Application.Commands.Jogador.Response;
 using NotasDoJogo.Application.Commands.Queries;
 using NotasDoJogo.Application.Contracts;
 
-namespace NotasDoJogo.Application.Handlers
+namespace NotasDoJogo.Application.Handlers.Jogador
 {
     public class EditarPerfilJogadorHandler : IRequestHandler<EditarItemQuery<JogadorRequest, JogadorResponse>, JogadorResponse>
     {
@@ -19,7 +19,7 @@ namespace NotasDoJogo.Application.Handlers
         {
             try
             {
-                var response = await _service.EditarJogadorAsync(request.Id, request.Request); 
+                var response = await _service.EditarJogadorAsync(request.Id, request.Request);
                 return response;
             }
             catch (Exception ex)

@@ -1,7 +1,10 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using NotasDoJogo.Application.Commands.Partida.Request;
+using NotasDoJogo.Application.Commands.Partida.Response;
 using NotasDoJogo.Application.Contracts;
-using NotasDoJogo.Application.Dtos;
 using NotasDoJogo.Domain.Models;
+using NotasDoJogo.Persistence.Contexts;
 using NotasDoJogo.Persistence.Contracts;
 
 namespace NotasDoJogo.Persistence.Services
@@ -9,68 +12,79 @@ namespace NotasDoJogo.Persistence.Services
     public class PartidaService : IPartidaService
     {
         private readonly IGeralPersist _geralPersist;
-        private readonly IPartidaPersist _partidaPersist;
+        private readonly NJContext _context;
         private readonly IMapper _mapper;
 
-        public PartidaService(IGeralPersist geralPersist, IPartidaPersist partidaPersist, IMapper mapper)
+        public PartidaService(IGeralPersist geralPersist, NJContext context, IMapper mapper)
         {
             _geralPersist = geralPersist;
-            _partidaPersist = partidaPersist;
+            _context = context;
             _mapper = mapper;
         }
 
-        public async Task<PartidaDto> AddPartidaAsync(PartidaDto partida)
+        public async Task<PartidaResponse> AddPartidaAsync(PartidaRequest request)
         {
-            var model = _mapper.Map<Partida>(partida);
+            var partida = _mapper.Map<Partida>(request);
+            _geralPersist.Add(partida);
 
-            _geralPersist.Add(model);
             var saveChangesResult = await _geralPersist.SaveChangesAsync();
 
-            if(saveChangesResult)
+            if (saveChangesResult)
             {
-                var partidaRetorno = await _partidaPersist.GetByIdAsync(model.Id);
-                return _mapper.Map<PartidaDto>(partidaRetorno);
+                var partidaRetorno = await _context.Partidas.FindAsync(partida.Id);
+                var response = _mapper.Map<PartidaResponse>(partidaRetorno);
+                return response;
             }
-            return null;
+            return new PartidaResponse { Sucesso = false };
         }
 
-        public async Task<PartidaDto> GetPartidaByIdAsync(int partidaId)
+        public async Task<List<PartidaResponse>> GetPartidasAsync()
         {
-            var partidaRetorno = await _partidaPersist.GetByIdAsync(partidaId);
-            return _mapper.Map<PartidaDto>(partidaRetorno);
+            var partidas = await _context.Partidas.ToListAsync();
+            var response = _mapper.Map<List<PartidaResponse>>(partidas);
+
+            return response;
         }
 
-        public async Task<List<PartidaDto>> GetPartidasAsync()
+        public async Task<PartidaResponse> GetPartidaByIdAsync(int partidaId)
         {
-            var partidaRetorno = await _partidaPersist.GetAllAsync();
-            return _mapper.Map<List<PartidaDto>>(partidaRetorno);
+            var partida = await _context.Partidas.FindAsync(partidaId);
+            var response = _mapper.Map<PartidaResponse>(partida);
+            return response;
         }
 
-        public async Task<PartidaDto> UpdatePartidaAsync(int id, PartidaDto partida)
+        public async Task<PartidaResponse> EditarPartidaAsync(int id, PartidaRequest request)
         {
-            var model = await _partidaPersist.GetByIdAsync(id);
-            if(model == null) return null;
+            var partidaRetorno = await _context.Partidas.FindAsync(id);
 
-            partida.Id = model.Id;
-            _mapper.Map(partida, model);
+            if (partidaRetorno == null)
+                return new PartidaResponse() { Sucesso = false };
 
-            _geralPersist.Update(model);
+            request.Id = partidaRetorno.Id;
+            _mapper.Map(request, partidaRetorno);
+
+            _geralPersist.Update(partidaRetorno);
 
             if (await _geralPersist.SaveChangesAsync())
             {
-                var partidaUpdate = await _partidaPersist.GetByIdAsync(model.Id);
-                return _mapper.Map<PartidaDto>(partidaUpdate);
+                var partidaUpdate = await _context.Partidas.FindAsync(request.Id);
+                var response = _mapper.Map<PartidaResponse>(partidaUpdate);
+                return response;
             }
-            return null;
+
+            return new PartidaResponse() { Sucesso = false };
         }
 
-        public async Task<bool> DeletePartidaAsync(int partidaId)
+        public async Task<PartidaResponse> DeletePartidaAsync(int partidaId)
         {
-            var partida = await _partidaPersist.GetByIdAsync(partidaId) 
-                ?? throw new Exception("Partida para delete não encontrada,");
-                
-            _geralPersist.Delete(partida);
-            return await _geralPersist.SaveChangesAsync();
+            var response = await _context.Partidas.FindAsync(partidaId)
+                ?? throw new Exception("Partida para delete não encontrada.");
+
+            _geralPersist.Delete(response);
+
+            await _geralPersist.SaveChangesAsync();
+
+            return _mapper.Map<PartidaResponse>(response);
         }        
     }
 }

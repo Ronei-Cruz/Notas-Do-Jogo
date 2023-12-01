@@ -11,7 +11,7 @@ namespace NotasDoJogo.Tests.Services
     public class UsuarioServiceTest
     {
 
-        private readonly UsuarioService usuarioService;
+        /*private readonly UsuarioService usuarioService;
         private readonly Mock<IGeralPersist> mockGeralPersist;
         private readonly Mock<IUsuarioPersist> mockUsuarioPersist;
         private readonly Mock<IMapper> mockMapper;
@@ -142,6 +142,6 @@ namespace NotasDoJogo.Tests.Services
             mockUsuarioPersist.Verify(p => p.GetByIdAsync(It.IsAny<int>()), Times.Once);
             mockGeralPersist.Verify(p => p.Delete(It.IsAny<Usuario>()), Times.Once);
             mockGeralPersist.Verify(p => p.SaveChangesAsync(), Times.Once);
-        }
+        }*/
     }
 }

@@ -1,6 +1,10 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using NotasDoJogo.Application.Contracts;
-using NotasDoJogo.Application.Dtos;
+using NotasDoJogo.Application;
+using NotasDoJogo.Application.Commands.Queries;
+using NotasDoJogo.Application.Commands.Request;
+using NotasDoJogo.Application.Commands.Usuario.Request;
+using NotasDoJogo.Application.Commands.Usuario.Response;
 
 namespace NotasDoJogo.API.Controllers
 {
@@ -8,98 +12,84 @@ namespace NotasDoJogo.API.Controllers
     [Route("api/[controller]")]
     public class UsuarioController : ControllerBase
     {
-        private readonly IUsuarioService _usuarioService;
+        private readonly IMediator _mediator;
 
-        public UsuarioController(IUsuarioService usuarioService)
+        public UsuarioController(IMediator mediator)
         {
-            _usuarioService = usuarioService;
+            _mediator = mediator;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddUsuario([FromBody] UsuarioDto usuarioDto)
+        [HttpPost("adicionar-usuário")]
+        public async Task<IActionResult> AdicionardUsuario([FromBody] UsuarioRequest request)
         {
-            try
-            {
-                var usuario = await _usuarioService.AddUsuarioAsync(usuarioDto);
-                if (usuario != null)
-                    return CreatedAtAction(nameof(GetUsuarioById), new { id = usuario.Id }, usuario);
+            if (request == null)
+                return BadRequest("Request inválida");
 
-                return BadRequest("Falha ao adicionar o usuario.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
-            }
+            var response = await _mediator.Send(request);
+
+            if (!response.Sucesso)
+                return BadRequest("Erro ao adicionar usuário!");
+
+            return Ok(response);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllUsuarios()
+        [HttpGet("visualizar-usuários")]
+        public async Task<IActionResult> VisualizarUsuarios()
         {
-            try
-            {
-                var usuario = await _usuarioService.GetUsuariosAsync();
-                if (usuario != null)
-                {
-                    return Ok(usuario);
-                }
-                return NotFound("Usuario não encontrado.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
-            }
+            var response = await _mediator.Send(new VisualizarItensQuery<UsuarioResponse>());
+
+            if (response.IsNullOrEmpty())
+                return BadRequest("Erro ao visualizar usuários!");
+
+            return Ok(response);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUsuarioById(int id)
+        [HttpGet("perfil-usuário/{id}")]
+        public async Task<IActionResult> PerfilUsuarioById(int id)
         {
-            try
-            {
-                var usuario = await _usuarioService.GetUsuarioByIdAsync(id);
-                if (usuario != null)
-                {
-                    return Ok(usuario);
-                }
-                return NotFound("Usuario não encontrado.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
-            }
+            if (id <= 0)
+                return BadRequest("Id inválido");
+
+            var response = await _mediator.Send(new ObterItemQuery<UsuarioResponse>(id));
+
+            if (!response.Sucesso)
+                return BadRequest("Erro ao visualizar perfil do usuário!");
+
+            return Ok(response);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUsuario(int id, UsuarioDto model)
+        [HttpPut("editar-usuario/{id}")]
+        public async Task<IActionResult> EditarUsuario(int id, UsuarioRequest request)
         {
-            try
+            if (id <= 0 || request == null)
+                return BadRequest("Request inválida");
+
+            var usuario = new EditarItemQuery<UsuarioRequest, UsuarioResponse>
             {
-                var usuario = await _usuarioService.UpdateUsuarioAsync(id, model);
-                if (usuario == null) return BadRequest("Erro ao tentar atualizar usuario.");
-                
-                return Ok(usuario);
-            }
-            catch (Exception ex)
-            {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
-                $"Erro ao tentar atualizar usuario. Erro {ex.Message}");
-            }
+                Id = id,
+                Request = request
+            };
+
+            var response = await _mediator.Send(usuario);
+
+            if (!response.Sucesso)
+                return BadRequest("Erro ao editar perfil do usuário!");
+
+            return Ok(response);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("deletar-usuário/{id}")]
         public async Task<IActionResult> DeleteUsuario(int id)
         {
-            try
-            {
-                var usuario = await _usuarioService.GetUsuarioByIdAsync(id);
-                if (usuario == null) return NoContent();
+            if (id <= 0)
+                return BadRequest("Id inválido");
 
-                return await _usuarioService.DeleteUsuarioAsync(id) ? Ok(new {message = "Deletado."}) :
-                    throw new Exception("Ocorreu um problema não especifico ao tentar deletar Usuario.");
-            }
-            catch (Exception ex)
-            {
-                 return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
-            }
+            var response = await _mediator.Send(new DeletarItemQuery<UsuarioResponse>(id));
+
+            if (!response.Sucesso)
+                return BadRequest("Erro ao deletar perfil do usuário!");
+
+            return Ok(response.Mensagem = "Usuário deletado com Sucesso!");
         }
     }
 }

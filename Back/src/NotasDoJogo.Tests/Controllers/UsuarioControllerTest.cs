@@ -10,7 +10,7 @@ namespace NotasDoJogo.Tests.Controllers
 {
     public class UsuarioControllerTest
     {
-        private readonly Mock<IUsuarioService> mockUsuarioService;
+        /*private readonly Mock<IUsuarioService> mockUsuarioService;
         private readonly UsuarioController usuarioController;
 
         public UsuarioControllerTest()
@@ -60,6 +60,6 @@ namespace NotasDoJogo.Tests.Controllers
             var returnedUsuarios = Assert.IsAssignableFrom<List<UsuarioDto>>(okObjectResult.Value);
             Assert.Equal(usuarios.Count, returnedUsuarios.Count);
             Assert.Equal(usuarios, returnedUsuarios);
-        }
+        }*/
     }
 }

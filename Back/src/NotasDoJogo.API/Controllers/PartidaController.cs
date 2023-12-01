@@ -1,6 +1,10 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using NotasDoJogo.Application.Contracts;
-using NotasDoJogo.Application.Dtos;
+using NotasDoJogo.Application;
+using NotasDoJogo.Application.Commands.Partida.Request;
+using NotasDoJogo.Application.Commands.Partida.Response;
+using NotasDoJogo.Application.Commands.Queries;
+using NotasDoJogo.Application.Commands.Request;
 
 namespace NotasDoJogo.API.Controllers
 {
@@ -8,92 +12,84 @@ namespace NotasDoJogo.API.Controllers
     [Route("api/[controller]")]
     public class PartidaController : ControllerBase
     {
-        private readonly IPartidaService _partidaService;
+        private readonly IMediator _mediator;
 
-        public PartidaController(IPartidaService partidaService)
+        public PartidaController(IMediator mediator)
         {
-            _partidaService = partidaService;
+            _mediator = mediator;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddPartida([FromBody] PartidaDto partidaDto)
+        [HttpPost("adicionar-partida")]
+        public async Task<IActionResult> AdicionarPartida([FromBody] PartidaRequest request)
         {
-            try
-            {
-                var partida = await _partidaService.AddPartidaAsync(partidaDto);
-                if (partida != null)
-                {
-                    return CreatedAtAction(nameof(GetPartidaById), new { id = partida.Id }, partida);
-                }
-                return BadRequest("Falha ao adiciionar a partida.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
-            }
+            if (request == null)
+                return BadRequest("Request inválida");
+
+            var response = await _mediator.Send(request);
+
+            if (!response.Sucesso)
+                return BadRequest("Erro ao adicionar Partida!");
+
+            return Ok(response);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllPartidas()
+        [HttpGet("visualizar-partidas")]
+        public async Task<IActionResult> VisualizarPartidas()
         {
-            try
-            {
-                var partida = await _partidaService.GetPartidasAsync();
-                if(partida != null) return Ok(partida);
+            var response = await _mediator.Send(new VisualizarItensQuery<PartidaResponse>());
 
-                return NotFound("Partida não encontrada.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
-            }
+            if (response.IsNullOrEmpty())
+                return BadRequest("Erro ao visualizar partidas!");
+
+            return Ok(response);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetPartidaById(int id)
+        [HttpGet("informações-partidas/{id}")]
+        public async Task<IActionResult> InformacoesPartidaById(int id)
         {
-            try
-            {
-                var partida = await _partidaService.GetPartidaByIdAsync(id);
-                if(partida != null) return Ok(partida);
+            if (id <= 0)
+                return BadRequest("Id inválido");
 
-                return NotFound("Partida não encontrada.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
-            }
+            var response = await _mediator.Send(new ObterItemQuery<PartidaResponse>(id));
+
+            if (!response.Sucesso)
+                return BadRequest("Erro ao visualizar informações da partida!");
+
+            return Ok(response);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePartida(int id, PartidaDto model)
+        [HttpPut("editar-partida/{id}")]
+        public async Task<IActionResult> EditarPartida(int id, PartidaRequest request)
         {
-            try
+            if (id <= 0 || request == null)
+                return BadRequest("Request inválida");
+
+            var partida = new EditarItemQuery<PartidaRequest, PartidaResponse>
             {
-                var partida = await _partidaService.UpdatePartidaAsync(id, model);
-                if(partida == null) return BadRequest("Erro ao tentar atualizar partida.");
-                return Ok(partida);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
-            }
+                Id = id,
+                Request = request
+            };
+
+            var response = await _mediator.Send(partida);
+
+            if (!response.Sucesso)
+                return BadRequest("Erro ao editar informações da partida!");
+
+            return Ok(response);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("deletar-partida/{id}")]
         public async Task<IActionResult> DeletePartida(int id)
         {
-            try
-            {
-                var partida = await _partidaService.GetPartidaByIdAsync(id);
-                if(partida == null) return NoContent();
+            if (id <= 0)
+                return BadRequest("Id inválido");
 
-                return await _partidaService.DeletePartidaAsync(id) ? Ok(new { message = "Deletado." }) : throw new Exception("Ocorreu um problema não especifico ao tentar deletar Partida.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
-            }
+            var response = await _mediator.Send(new DeletarItemQuery<PartidaResponse>(id));
+
+            if (!response.Sucesso)
+                return BadRequest("Erro ao deletar partida!");
+
+            return Ok(response.Mensagem = "Partida deletada com Sucesso!");
         }
     }
 }

@@ -3,6 +3,10 @@ using NotasDoJogo.Application.Dtos;
 using NotasDoJogo.Domain.Models;
 using NotasDoJogo.Application.Commands.Jogador.Request;
 using NotasDoJogo.Application.Commands.Jogador.Response;
+using NotasDoJogo.Application.Commands.Usuario.Response;
+using NotasDoJogo.Application.Commands.Usuario.Request;
+using NotasDoJogo.Application.Commands.Partida.Request;
+using NotasDoJogo.Application.Commands.Partida.Response;
 
 namespace NotasDoJogo.Application.Helpers
 {
@@ -10,11 +14,13 @@ namespace NotasDoJogo.Application.Helpers
     {
         public NJProfile()
         {
-            CreateMap<Usuario, UsuarioDto>();
             CreateMap<Jogador, JogadorResponse>();
             CreateMap<JogadorRequest, Jogador>();
+            CreateMap<Usuario, UsuarioResponse>();
+            CreateMap<UsuarioRequest, Usuario>();
+            CreateMap<Partida, PartidaResponse>();
+            CreateMap<PartidaRequest, Partida>();
             CreateMap<Nota, NotaDto>();
-            CreateMap<Partida, PartidaDto>();
         }
     }
 }

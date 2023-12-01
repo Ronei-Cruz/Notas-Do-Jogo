@@ -3,7 +3,7 @@ using NotasDoJogo.Application.Commands.Jogador.Request;
 using NotasDoJogo.Application.Commands.Jogador.Response;
 using NotasDoJogo.Application.Contracts;
 
-namespace NotasDoJogo.Application.Handlers
+namespace NotasDoJogo.Application.Handlers.Jogador
 {
     public class AdicionarJogadorHandler : IRequestHandler<JogadorRequest, JogadorResponse>
     {

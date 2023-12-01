@@ -1,7 +1,10 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using NotasDoJogo.Application.Commands.Usuario.Request;
+using NotasDoJogo.Application.Commands.Usuario.Response;
 using NotasDoJogo.Application.Contracts;
-using NotasDoJogo.Application.Dtos;
 using NotasDoJogo.Domain.Models;
+using NotasDoJogo.Persistence.Contexts;
 using NotasDoJogo.Persistence.Contracts;
 
 namespace NotasDoJogo.Persistence.Services
@@ -9,68 +12,79 @@ namespace NotasDoJogo.Persistence.Services
     public class UsuarioService : IUsuarioService
     {
         private readonly IGeralPersist _geralPersist;
-        private readonly IUsuarioPersist _usuarioPersit;
+        private readonly NJContext _context;
         private readonly IMapper _mapper;
 
-        public UsuarioService(IGeralPersist geralPersist, IUsuarioPersist usuarioPersit, IMapper mapper)
+        public UsuarioService(IGeralPersist geralPersist,  NJContext context, IMapper mapper)
         {
             _geralPersist = geralPersist;
-            _usuarioPersit = usuarioPersit;
+            _context = context;
             _mapper = mapper;
         }
 
-        public async Task<UsuarioDto> AddUsuarioAsync(UsuarioDto usuario)
+        public async Task<UsuarioResponse> AdicionarUsuarioAsync(UsuarioRequest request)
         {
-            var model = _mapper.Map<Usuario>(usuario);
+            var usuario = _mapper.Map<Usuario>(request);
+            _geralPersist.Add(usuario);
 
-            _geralPersist.Add(model);
             var saveChangesResult = await _geralPersist.SaveChangesAsync();
-            
+
             if (saveChangesResult)
             {
-                var usuarioRetorno = await _usuarioPersit.GetByIdAsync(model.Id);
-                return _mapper.Map<UsuarioDto>(usuarioRetorno);
+                var usuarioRetorno = await _context.Usuarios.FindAsync(usuario.Id);
+                var response = _mapper.Map<UsuarioResponse>(usuarioRetorno);
+                return response;
             }
-            return null;
+            return new UsuarioResponse { Sucesso = false };
         }
 
-        public async Task<UsuarioDto> GetUsuarioByIdAsync(int usuarioId)
+        public async Task<List<UsuarioResponse>> GetUsuariosAsync()
         {
-            var usuarioRetorno = await _usuarioPersit.GetByIdAsync(usuarioId);
-            return _mapper.Map<UsuarioDto>(usuarioRetorno);
+            var usuarios = await _context.Usuarios.ToListAsync();
+            var response = _mapper.Map<List<UsuarioResponse>>(usuarios);
+
+            return response;
         }
 
-        public async Task<List<UsuarioDto>> GetUsuariosAsync()
+        public async Task<UsuarioResponse> GetUsuarioByIdAsync(int usuarioId)
         {
-            var usuarioRetorno = await _usuarioPersit.GetAllAsync();
-            return _mapper.Map<List<UsuarioDto>>(usuarioRetorno);
+            var usuario = await _context.Usuarios.FindAsync(usuarioId);
+            var response = _mapper.Map<UsuarioResponse>(usuario);
+            return response;
         }
 
-        public async Task<UsuarioDto> UpdateUsuarioAsync(int id, UsuarioDto usuario)
+        public async Task<UsuarioResponse> EditarUsuarioAsync(int id, UsuarioRequest request)
         {
-            var model = await _usuarioPersit.GetByIdAsync(id);
-            if (model == null) return null;
+            var usuarioRetorno = await _context.Usuarios.FindAsync(id);     
 
-            usuario.Id = model.Id;
-            _mapper.Map(usuario, model);
+            if (usuarioRetorno == null) 
+                return new UsuarioResponse() { Sucesso = false };       
 
-            _geralPersist.Update(model);
-            
+            request.Id = usuarioRetorno.Id;
+            _mapper.Map(request, usuarioRetorno);
+
+            _geralPersist.Update(usuarioRetorno);
+
             if (await _geralPersist.SaveChangesAsync())
             {
-                var usuarioUpdate = await _usuarioPersit.GetByIdAsync(model.Id);
-                return _mapper.Map<UsuarioDto>(usuarioUpdate);
+                var usuarioUpdate = await _context.Usuarios.FindAsync(request.Id);
+                var response = _mapper.Map<UsuarioResponse>(usuarioUpdate);
+                return response;
             }
-            return null;
+
+            return new UsuarioResponse() { Sucesso = false };
         }
 
-        public async Task<bool> DeleteUsuarioAsync(int usuarioId)
+        public async Task<UsuarioResponse> DeleteUsuarioAsync(int usuarioId)
         {
-            var usuario = await _usuarioPersit.GetByIdAsync(usuarioId) 
+            var response = await _context.Usuarios.FindAsync(usuarioId)
                 ?? throw new Exception("Usuário para delete não encontrado.");
 
-            _geralPersist.Delete(usuario);
-            return await _geralPersist.SaveChangesAsync();
-        } 
+            _geralPersist.Delete(response);
+
+            await _geralPersist.SaveChangesAsync();
+
+            return _mapper.Map<UsuarioResponse>(response);
+        }
     }
 }

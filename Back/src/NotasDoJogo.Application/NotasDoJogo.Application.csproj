@@ -7,6 +7,9 @@
   <ItemGroup>
     <ProjectReference Include="..\NotasDoJogo.Domain\NotasDoJogo.Domain.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Handlers\Nota\" />
+  </ItemGroup>
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>

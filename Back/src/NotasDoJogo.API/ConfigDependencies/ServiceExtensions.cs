@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using NotasDoJogo.Application.Contracts;
-using NotasDoJogo.Application.Handlers;
+using NotasDoJogo.Application.Handlers.Jogador;
+using NotasDoJogo.Application.Handlers.Usuario;
+using NotasDoJogo.Application.Handlers.Partida;
 using NotasDoJogo.Persistence.Contracts;
 using NotasDoJogo.Persistence.Repository;
 using NotasDoJogo.Persistence.Services;
@@ -15,11 +17,27 @@ namespace NotasDoJogo.API.ConfigDependencies
             services.AddMediatR
             (
                 typeof(Program).Assembly,
+
+                // JOGADOR
                 typeof(AdicionarJogadorHandler).Assembly, 
                 typeof(VisualizarJogadoresHandler).Assembly,
                 typeof(PerfilJogadorHandler).Assembly,
                 typeof(EditarPerfilJogadorHandler).Assembly,
-                typeof(DeletarPerfilJogadorHandler).Assembly
+                typeof(DeletarPerfilJogadorHandler).Assembly,
+
+                // USUÁRIO
+                typeof(AdicionarUsuarioHandler).Assembly,
+                typeof(VisualizarUsuariosHandler).Assembly,
+                typeof(PerfilUsuarioHandler).Assembly,
+                typeof(EditarPerfilUsuarioHandler).Assembly,
+                typeof(DeletarPerfilUsuarioHandler).Assembly,
+
+                // PARTIDA
+                typeof(AdicionarPartidaHandler).Assembly,
+                typeof(VisualizarPartidasHandler).Assembly,
+                typeof(InformacoesPartidaHandler).Assembly,
+                typeof(EditarInformacoesPartidaHandler).Assembly,
+                typeof(DeletarPartidaHandler).Assembly
             );
             #endregion
 

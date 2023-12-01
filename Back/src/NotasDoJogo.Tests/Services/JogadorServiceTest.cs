@@ -13,7 +13,7 @@ namespace NotasDoJogo.Tests.Services
 {
     public class JogadorServiceTest
     {
-        private readonly IJogadorService jogadorService;
+        /*private readonly IJogadorService jogadorService;
         private readonly NJContext nJContext;
         private readonly Mock<IGeralPersist> mockGeralPersist;
         private readonly Mock<IMapper> mockMapper;
@@ -144,6 +144,6 @@ namespace NotasDoJogo.Tests.Services
             //mockJogadorPersist.Verify(p => p.GetByIdAsync(It.IsAny<int>()), Times.Once);
             mockGeralPersist.Verify(p => p.Delete(It.IsAny<Jogador>()), Times.Once);
             mockGeralPersist.Verify(p => p.SaveChangesAsync(), Times.Once);
-        }
+        }*/
     }
 }

@@ -16,15 +16,8 @@ namespace NotasDoJogo.Application.Handlers.Partida
 
         public async Task<PartidaResponse> Handle(DeletarItemQuery<PartidaResponse> request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var response = await _service.DeletePartidaAsync(request.Id);
-                return response;
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException("Erro ao deletar partida: ", ex);
-            }
+            var response = await _service.DeletePartidaAsync(request.Id);
+            return response;
         }
     }
 }

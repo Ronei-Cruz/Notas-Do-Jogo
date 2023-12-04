@@ -39,7 +39,7 @@ namespace NotasDoJogo.API.Controllers
             var response = await _mediator.Send(new VisualizarItensQuery<PartidaResponse>());
 
             if (response.IsNullOrEmpty())
-                return BadRequest("Erro ao visualizar partidas!");
+                return NotFound("Nenhuma partida encontrada!");
 
             return Ok(response);
         }
@@ -53,7 +53,7 @@ namespace NotasDoJogo.API.Controllers
             var response = await _mediator.Send(new ObterItemQuery<PartidaResponse>(id));
 
             if (!response.Sucesso)
-                return BadRequest("Erro ao visualizar informações da partida!");
+                return NotFound("Informações da partida não encontrada!");
 
             return Ok(response);
         }
@@ -73,7 +73,7 @@ namespace NotasDoJogo.API.Controllers
             var response = await _mediator.Send(partida);
 
             if (!response.Sucesso)
-                return BadRequest("Erro ao editar informações da partida!");
+                return BadRequest("Erro ao salvar atualização da partida!");
 
             return Ok(response);
         }
@@ -87,7 +87,7 @@ namespace NotasDoJogo.API.Controllers
             var response = await _mediator.Send(new DeletarItemQuery<PartidaResponse>(id));
 
             if (!response.Sucesso)
-                return BadRequest("Erro ao deletar partida!");
+                return NotFound("Partida não encontrada!");
 
             return Ok(response.Mensagem = "Partida deletada com Sucesso!");
         }

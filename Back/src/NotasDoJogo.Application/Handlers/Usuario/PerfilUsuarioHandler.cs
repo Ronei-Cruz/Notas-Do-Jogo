@@ -16,15 +16,8 @@ namespace NotasDoJogo.Application.Handlers.Usuario
 
         public async Task<UsuarioResponse> Handle(ObterItemQuery<UsuarioResponse> request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var response = await _service.GetUsuarioByIdAsync(request.Id);
-                return response;
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException("Erro ao visualizar perfil do usuário: ", ex);
-            }
+            var response = await _service.GetUsuarioByIdAsync(request.Id);
+            return response;
         }
     }
 }

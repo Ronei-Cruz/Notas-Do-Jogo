@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using NotasDoJogo.Application;
 using NotasDoJogo.Application.Commands.Usuario.Request;
 using NotasDoJogo.Application.Commands.Usuario.Response;
 using NotasDoJogo.Application.Contracts;
@@ -24,67 +25,112 @@ namespace NotasDoJogo.Persistence.Services
 
         public async Task<UsuarioResponse> AdicionarUsuarioAsync(UsuarioRequest request)
         {
-            var usuario = _mapper.Map<Usuario>(request);
-            _geralPersist.Add(usuario);
-
-            var saveChangesResult = await _geralPersist.SaveChangesAsync();
-
-            if (saveChangesResult)
+            try
             {
-                var usuarioRetorno = await _context.Usuarios.FindAsync(usuario.Id);
-                var response = _mapper.Map<UsuarioResponse>(usuarioRetorno);
-                return response;
+                var usuario = _mapper.Map<Usuario>(request);
+                _geralPersist.Add(usuario);
+
+                var saveChangesResult = await _geralPersist.SaveChangesAsync();
+
+                if (saveChangesResult)
+                {
+                    var usuarioRetorno = await _context.Usuarios.FindAsync(usuario.Id);
+                    var response = _mapper.Map<UsuarioResponse>(usuarioRetorno);
+                    return response;
+                }
+                return new UsuarioResponse { Sucesso = false };
             }
-            return new UsuarioResponse { Sucesso = false };
+            catch (Exception ex)
+            {
+                return new UsuarioResponse {
+                    Sucesso = false, Mensagem = "Erro ao adicionar usu·rio. Detalhes: " + ex.Message };
+            }  
         }
 
         public async Task<List<UsuarioResponse>> GetUsuariosAsync()
         {
-            var usuarios = await _context.Usuarios.ToListAsync();
-            var response = _mapper.Map<List<UsuarioResponse>>(usuarios);
+            try
+            {
+                var usuarios = await _context.Usuarios.ToListAsync();
 
-            return response;
+                if (usuarios.IsNullOrEmpty()) return null;
+
+                var response = _mapper.Map<List<UsuarioResponse>>(usuarios);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Erro ao visualizar usu·rios!: ", ex);
+            }           
         }
 
         public async Task<UsuarioResponse> GetUsuarioByIdAsync(int usuarioId)
         {
-            var usuario = await _context.Usuarios.FindAsync(usuarioId);
-            var response = _mapper.Map<UsuarioResponse>(usuario);
-            return response;
+            try
+            {
+                var usuario = await _context.Usuarios.FindAsync(usuarioId);
+                if (usuario == null) return new UsuarioResponse() { Sucesso = false };
+
+                var response = _mapper.Map<UsuarioResponse>(usuario);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                return new UsuarioResponse{
+                    Sucesso = false, Mensagem = "Erro ao visualzar perfil usu·rio. Detalhes: " + ex.Message };
+            }
         }
 
         public async Task<UsuarioResponse> EditarUsuarioAsync(int id, UsuarioRequest request)
         {
-            var usuarioRetorno = await _context.Usuarios.FindAsync(id);     
-
-            if (usuarioRetorno == null) 
-                return new UsuarioResponse() { Sucesso = false };       
-
-            request.Id = usuarioRetorno.Id;
-            _mapper.Map(request, usuarioRetorno);
-
-            _geralPersist.Update(usuarioRetorno);
-
-            if (await _geralPersist.SaveChangesAsync())
+            try
             {
-                var usuarioUpdate = await _context.Usuarios.FindAsync(request.Id);
-                var response = _mapper.Map<UsuarioResponse>(usuarioUpdate);
-                return response;
-            }
+                var usuarioRetorno = await _context.Usuarios.FindAsync(id);
 
-            return new UsuarioResponse() { Sucesso = false };
+                if (usuarioRetorno == null)
+                    return new UsuarioResponse() { Sucesso = false };
+
+                request.Id = usuarioRetorno.Id;
+                _mapper.Map(request, usuarioRetorno);
+
+                _geralPersist.Update(usuarioRetorno);
+
+                if (await _geralPersist.SaveChangesAsync())
+                {
+                    var usuarioUpdate = await _context.Usuarios.FindAsync(request.Id);
+                    var response = _mapper.Map<UsuarioResponse>(usuarioUpdate);
+                    return response;
+                }
+
+                return new UsuarioResponse() { Sucesso = false };
+            }
+            catch (Exception ex)
+            {
+                return new UsuarioResponse{
+                    Sucesso = false, Mensagem = "Erro ao Atualizar usu·rio. Detalhes: " + ex.Message };
+            }
         }
 
         public async Task<UsuarioResponse> DeleteUsuarioAsync(int usuarioId)
         {
-            var response = await _context.Usuarios.FindAsync(usuarioId)
-                ?? throw new Exception("Usu√°rio para delete n√£o encontrado.");
+            try
+            {
+                var response = await _context.Usuarios.FindAsync(usuarioId);
 
-            _geralPersist.Delete(response);
+                if (response == null) return new UsuarioResponse() { Sucesso = false };
 
-            await _geralPersist.SaveChangesAsync();
+                _geralPersist.Delete(response);
 
-            return _mapper.Map<UsuarioResponse>(response);
+                await _geralPersist.SaveChangesAsync();
+
+                return _mapper.Map<UsuarioResponse>(response);
+            }
+            catch (Exception ex)
+            {
+                return new UsuarioResponse{
+                    Sucesso = false, Mensagem = "Erro ao deletar usu·rio. Detalhes: " + ex.Message };
+            }
         }
     }
 }

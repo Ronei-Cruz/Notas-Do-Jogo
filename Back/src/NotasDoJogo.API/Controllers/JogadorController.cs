@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using NotasDoJogo.Application.Commands.Request;
-using NotasDoJogo.Application;
 using MediatR;
 using NotasDoJogo.Application.Commands.Jogador.Request;
 using NotasDoJogo.Application.Commands.Jogador.Response;
@@ -38,8 +37,8 @@ namespace NotasDoJogo.API.Controllers
         {
             var response = await _mediator.Send(new VisualizarItensQuery<JogadorResponse>());
 
-            if (response.IsNullOrEmpty())
-                return BadRequest("Erro ao visualizar jogadores!");
+            if (response == null)
+                return NotFound("Nenhum jogador encontrado!");
             
             return Ok(response);
         }
@@ -53,7 +52,7 @@ namespace NotasDoJogo.API.Controllers
             var response = await _mediator.Send(new ObterItemQuery<JogadorResponse>(id));
 
             if (!response.Sucesso)
-                return BadRequest("Erro ao visualizar perfil do jogador!");
+                return NotFound("Perfil do jogador não encontrado!");
             
             return Ok(response);
         }
@@ -73,7 +72,7 @@ namespace NotasDoJogo.API.Controllers
             var response = await _mediator.Send(jogador);
 
             if (!response.Sucesso)
-                return BadRequest("Erro ao editar perfil do jogador!");
+                return BadRequest("Erro ao salvar atualização do perfil do jogador!");
 
             return Ok(response);
 
@@ -88,7 +87,7 @@ namespace NotasDoJogo.API.Controllers
             var response = await _mediator.Send(new DeletarItemQuery<JogadorResponse>(id));
 
             if (!response.Sucesso)
-                return BadRequest("Erro ao deletar perfil do jogador!");
+                return NotFound("Perfil do jogador não encontrado!");
 
             return Ok(response.Mensagem = "Jogador deletado com Sucesso!");
         }

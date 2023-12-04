@@ -17,15 +17,8 @@ namespace NotasDoJogo.Application.Handlers.Usuario
 
         public async Task<List<UsuarioResponse>> Handle(VisualizarItensQuery<UsuarioResponse> request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var response = await _service.GetUsuariosAsync();
-                return response;
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException("Erro ao visualizar a usuário: ", ex);
-            }
+            var response = await _service.GetUsuariosAsync();
+            return response;
         }
     }
 }

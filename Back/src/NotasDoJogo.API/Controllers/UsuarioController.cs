@@ -19,7 +19,7 @@ namespace NotasDoJogo.API.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost("adicionar-usuário")]
+        [HttpPost("adicionar-usuario")]
         public async Task<IActionResult> AdicionardUsuario([FromBody] UsuarioRequest request)
         {
             if (request == null)
@@ -33,18 +33,18 @@ namespace NotasDoJogo.API.Controllers
             return Ok(response);
         }
 
-        [HttpGet("visualizar-usuários")]
+        [HttpGet("visualizar-usuarios")]
         public async Task<IActionResult> VisualizarUsuarios()
         {
             var response = await _mediator.Send(new VisualizarItensQuery<UsuarioResponse>());
 
-            if (response.IsNullOrEmpty())
-                return BadRequest("Erro ao visualizar usuários!");
+            if (response == null)
+                return NotFound("Nenhum usuário encontrado!");
 
             return Ok(response);
         }
 
-        [HttpGet("perfil-usuário/{id}")]
+        [HttpGet("perfil-usuario/{id}")]
         public async Task<IActionResult> PerfilUsuarioById(int id)
         {
             if (id <= 0)
@@ -53,7 +53,7 @@ namespace NotasDoJogo.API.Controllers
             var response = await _mediator.Send(new ObterItemQuery<UsuarioResponse>(id));
 
             if (!response.Sucesso)
-                return BadRequest("Erro ao visualizar perfil do usuário!");
+                return BadRequest("Perfil do usuário não encontrado!");
 
             return Ok(response);
         }
@@ -78,7 +78,7 @@ namespace NotasDoJogo.API.Controllers
             return Ok(response);
         }
 
-        [HttpDelete("deletar-usuário/{id}")]
+        [HttpDelete("deletar-usuario/{id}")]
         public async Task<IActionResult> DeleteUsuario(int id)
         {
             if (id <= 0)
@@ -87,7 +87,7 @@ namespace NotasDoJogo.API.Controllers
             var response = await _mediator.Send(new DeletarItemQuery<UsuarioResponse>(id));
 
             if (!response.Sucesso)
-                return BadRequest("Erro ao deletar perfil do usuário!");
+                return NotFound("Perfil do usuário não encontrado!");
 
             return Ok(response.Mensagem = "Usuário deletado com Sucesso!");
         }

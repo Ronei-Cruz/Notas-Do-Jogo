@@ -17,15 +17,8 @@ namespace NotasDoJogo.Application.Handlers.Partida
 
         public async Task<PartidaResponse> Handle(EditarItemQuery<PartidaRequest, PartidaResponse> request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var response = await _service.EditarPartidaAsync(request.Id, request.Request);
-                return response;
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException("Erro ao editar informações da partida: ", ex);
-            }
+            var response = await _service.EditarPartidaAsync(request.Id, request.Request);
+            return response;
         }
     }
 }

@@ -43,7 +43,6 @@ namespace NotasDoJogo.API.ConfigDependencies
 
             #region PERSIST
             services.AddScoped<IGeralPersist, GeralPersist>();
-            services.AddScoped<IPartidaPersist, PartidaPersist>();
             services.AddScoped<INotaPersist, NotaPersist>();
             #endregion
 
@@ -51,7 +50,6 @@ namespace NotasDoJogo.API.ConfigDependencies
             services.AddScoped<IJogadorService, JogadorService>();
             services.AddScoped<IPartidaService, PartidaService>();
             services.AddScoped<IUsuarioService, UsuarioService>();
-            services.AddScoped<IUsuarioPersist, UsuarioPersist>();
             services.AddScoped<INotaService, NotaService>();
             #endregion
         }

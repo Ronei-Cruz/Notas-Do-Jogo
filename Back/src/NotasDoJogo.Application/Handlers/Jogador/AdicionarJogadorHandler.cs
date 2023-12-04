@@ -15,16 +15,9 @@ namespace NotasDoJogo.Application.Handlers.Jogador
         }
 
         public async Task<JogadorResponse> Handle(JogadorRequest request, CancellationToken cancellationToken)
-        {
-            try
-            {
-                var resultado = await _service.AddJogadorAsync(request);
-                return resultado;
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException("Erro ao lançar a solicitação: ", ex);
-            }
+        {            
+            var resultado = await _service.AddJogadorAsync(request);
+            return resultado;   
         }
     }
 }

@@ -1,7 +1,10 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using NotasDoJogo.Application;
+using NotasDoJogo.Application.Commands.Jogador.Response;
 using NotasDoJogo.Application.Commands.Partida.Request;
 using NotasDoJogo.Application.Commands.Partida.Response;
+using NotasDoJogo.Application.Commands.Usuario.Response;
 using NotasDoJogo.Application.Contracts;
 using NotasDoJogo.Domain.Models;
 using NotasDoJogo.Persistence.Contexts;
@@ -24,67 +27,110 @@ namespace NotasDoJogo.Persistence.Services
 
         public async Task<PartidaResponse> AddPartidaAsync(PartidaRequest request)
         {
-            var partida = _mapper.Map<Partida>(request);
-            _geralPersist.Add(partida);
-
-            var saveChangesResult = await _geralPersist.SaveChangesAsync();
-
-            if (saveChangesResult)
+            try
             {
-                var partidaRetorno = await _context.Partidas.FindAsync(partida.Id);
-                var response = _mapper.Map<PartidaResponse>(partidaRetorno);
-                return response;
+                var partida = _mapper.Map<Partida>(request);
+                _geralPersist.Add(partida);
+
+                var saveChangesResult = await _geralPersist.SaveChangesAsync();
+
+                if (saveChangesResult)
+                {
+                    var partidaRetorno = await _context.Partidas.FindAsync(partida.Id);
+                    var response = _mapper.Map<PartidaResponse>(partidaRetorno);
+                    return response;
+                }
+                return new PartidaResponse { Sucesso = false };
             }
-            return new PartidaResponse { Sucesso = false };
+            catch (Exception ex)
+            {
+                return new PartidaResponse {
+                    Sucesso = false, Mensagem = "Erro ao adicionar partida. Detalhes: " + ex.Message };
+            }
         }
 
         public async Task<List<PartidaResponse>> GetPartidasAsync()
         {
-            var partidas = await _context.Partidas.ToListAsync();
-            var response = _mapper.Map<List<PartidaResponse>>(partidas);
+            try
+            {
+                var partidas = await _context.Partidas.ToListAsync();
+                if (partidas.IsNullOrEmpty()) return null;
 
-            return response;
+                var response = _mapper.Map<List<PartidaResponse>>(partidas);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Erro as visualizar partidas!: ", ex);
+            }
         }
 
         public async Task<PartidaResponse> GetPartidaByIdAsync(int partidaId)
         {
-            var partida = await _context.Partidas.FindAsync(partidaId);
-            var response = _mapper.Map<PartidaResponse>(partida);
-            return response;
+            try
+            {
+                var partida = await _context.Partidas.FindAsync(partidaId);
+                if (partida == null) return new PartidaResponse() { Sucesso = false };
+
+                var response = _mapper.Map<PartidaResponse>(partida);
+                return response;
+            }
+            catch(Exception ex) 
+            {
+                return new PartidaResponse {
+                    Sucesso = false, Mensagem = "Erro ao visualzar perfil partida. Detalhes: " + ex.Message };
+            }
         }
 
         public async Task<PartidaResponse> EditarPartidaAsync(int id, PartidaRequest request)
         {
-            var partidaRetorno = await _context.Partidas.FindAsync(id);
-
-            if (partidaRetorno == null)
-                return new PartidaResponse() { Sucesso = false };
-
-            request.Id = partidaRetorno.Id;
-            _mapper.Map(request, partidaRetorno);
-
-            _geralPersist.Update(partidaRetorno);
-
-            if (await _geralPersist.SaveChangesAsync())
+            try
             {
-                var partidaUpdate = await _context.Partidas.FindAsync(request.Id);
-                var response = _mapper.Map<PartidaResponse>(partidaUpdate);
-                return response;
-            }
+                var partidaRetorno = await _context.Partidas.FindAsync(id);
 
-            return new PartidaResponse() { Sucesso = false };
+                if (partidaRetorno == null)  return new PartidaResponse() { Sucesso = false };
+
+                request.Id = partidaRetorno.Id;
+                _mapper.Map(request, partidaRetorno);
+
+                _geralPersist.Update(partidaRetorno);
+
+                if (await _geralPersist.SaveChangesAsync())
+                {
+                    var partidaUpdate = await _context.Partidas.FindAsync(request.Id);
+                    var response = _mapper.Map<PartidaResponse>(partidaUpdate);
+                    return response;
+                }
+
+                return new PartidaResponse() { Sucesso = false };
+            }
+            catch (Exception ex)
+            {
+                return new PartidaResponse {
+                    Sucesso = false, Mensagem = "Erro ao Atualizar partida. Detalhes: " + ex.Message };
+            }
         }
 
         public async Task<PartidaResponse> DeletePartidaAsync(int partidaId)
         {
-            var response = await _context.Partidas.FindAsync(partidaId)
-                ?? throw new Exception("Partida para delete não encontrada.");
+            try
+            {
+                var response = await _context.Partidas.FindAsync(partidaId);
 
-            _geralPersist.Delete(response);
+                if (response == null) return new PartidaResponse() { Sucesso = false };
 
-            await _geralPersist.SaveChangesAsync();
+                _geralPersist.Delete(response);
 
-            return _mapper.Map<PartidaResponse>(response);
+                await _geralPersist.SaveChangesAsync();
+
+                return _mapper.Map<PartidaResponse>(response);
+            }
+            catch (Exception ex)
+            {
+                return new PartidaResponse {
+                    Sucesso = false, Mensagem = "Erro ao deletar partida. Detalhes: " + ex.Message };
+            }
         }        
     }
 }

@@ -16,15 +16,8 @@ namespace NotasDoJogo.Application.Handlers.Jogador
 
         public async Task<JogadorResponse> Handle(ObterItemQuery<JogadorResponse> request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var jogador = await _service.GetJogadorByIdAsync(request.Id);
-                return jogador;
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException("Erro ao visualizar perfil do jogador: ", ex);
-            }
+            var jogador = await _service.GetJogadorByIdAsync(request.Id);
+            return jogador;
         }
     }
 }

@@ -16,14 +16,7 @@ public class VisualizarPartidasHandler : IRequestHandler<VisualizarItensQuery<Pa
 
     public async Task<List<PartidaResponse>> Handle(VisualizarItensQuery<PartidaResponse> request, CancellationToken cancellationToken)
     {
-        try
-        {
-            var jogadores = await _service.GetPartidasAsync();
-            return jogadores;
-        }
-        catch (Exception ex)
-        {
-            throw new ApplicationException("Erro ao visualizar a partidas: ", ex);
-        }
+        var jogadores = await _service.GetPartidasAsync();
+        return jogadores;
     }
 }

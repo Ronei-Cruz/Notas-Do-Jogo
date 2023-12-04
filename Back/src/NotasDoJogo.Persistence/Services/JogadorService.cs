@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using NotasDoJogo.Application;
 using NotasDoJogo.Application.Commands.Jogador.Request;
 using NotasDoJogo.Application.Commands.Jogador.Response;
 using NotasDoJogo.Application.Contracts;
@@ -25,67 +26,115 @@ namespace NotasDoJogo.Persistence.Services
 
         public async Task<JogadorResponse> AddJogadorAsync(JogadorRequest request)
         {
-            var jogador = _mapper.Map<Jogador>(request);
-            _geralPersist.Add(jogador);
-
-            var saveChangesResult = await _geralPersist.SaveChangesAsync();
-
-            if (saveChangesResult)
+            try
             {
-                var jogadorRetorno = await _context.Jogadores.FindAsync(jogador.Id);
-                var response = _mapper.Map<JogadorResponse>(jogadorRetorno);
-                return response;
+                var jogador = _mapper.Map<Jogador>(request);
+                _geralPersist.Add(jogador);
+
+                var saveChangesResult = await _geralPersist.SaveChangesAsync();
+
+                if (saveChangesResult)
+                {
+                    var jogadorRetorno = await _context.Jogadores.FindAsync(jogador.Id);
+                    var response = _mapper.Map<JogadorResponse>(jogadorRetorno);
+                    return response;
+                }
+                return new JogadorResponse { Sucesso = false };
             }
-            return new JogadorResponse { Sucesso = false } ;
+            catch (Exception ex)
+            {
+                return new JogadorResponse { 
+                    Sucesso = false, Mensagem = "Erro ao adicionar jogador. Detalhes: " + ex.Message };
+            }
+            
         }
 
         public async Task<List<JogadorResponse>> GetJogadoresAsync()
         {
-            var jogadores = await _context.Jogadores.ToListAsync();
-            var response = _mapper.Map<List<JogadorResponse>>(jogadores);
+            try
+            {
+                var jogadores = await _context.Jogadores.ToListAsync();
 
-            return response;
+                if (jogadores.IsNullOrEmpty()) return null;
+
+                var response = _mapper.Map<List<JogadorResponse>>(jogadores);
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Erro ao visualizar jogadores!: ", ex);
+            }
         }
 
-        public async Task<JogadorResponse> GetJogadorByIdAsync(int jogadorId)
+        public async Task<JogadorResponse> GetJogadorByIdAsync(int id)
         {
-            var jogador = await _context.Jogadores.FindAsync(jogadorId);
-            var response = _mapper.Map<JogadorResponse>(jogador);
-            return response;
+            try
+            {
+                var jogador = await _context.Jogadores.FindAsync(id);
+                if (jogador == null) return new JogadorResponse() { Sucesso = false };
+
+                var response = _mapper.Map<JogadorResponse>(jogador);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                return new JogadorResponse { 
+                    Sucesso = false, Mensagem = "Erro ao visualzar perfil jogador. Detalhes: " + ex.Message };
+            } 
         }
 
         public async Task<JogadorResponse> EditarJogadorAsync(int id, JogadorRequest request)
-        {            
-            var jogadorRetorno = await _context.Jogadores.FindAsync(id);     
-
-            if (jogadorRetorno == null) 
-                return new JogadorResponse() { Sucesso = false };       
-
-            request.Id = jogadorRetorno.Id;
-            _mapper.Map(request, jogadorRetorno);
-
-            _geralPersist.Update(jogadorRetorno);
-
-            if (await _geralPersist.SaveChangesAsync())
+        {   
+            try
             {
-                var jogadorUpdate = await _context.Jogadores.FindAsync(request.Id);
-                var response = _mapper.Map<JogadorResponse>(jogadorUpdate);
-                return response;
+                var jogadorRetorno = await _context.Jogadores.FindAsync(id);
+
+                if (jogadorRetorno == null)
+                    return new JogadorResponse() { Sucesso = false };
+
+                request.Id = jogadorRetorno.Id;
+                _mapper.Map(request, jogadorRetorno);
+
+                _geralPersist.Update(jogadorRetorno);
+
+                if (await _geralPersist.SaveChangesAsync())
+                {
+                    var jogadorUpdate = await _context.Jogadores.FindAsync(request.Id);
+                    var response = _mapper.Map<JogadorResponse>(jogadorUpdate);
+                    return response;
+                }
+
+                return new JogadorResponse() { Sucesso = false };
+            }
+            catch (Exception ex)
+            {
+                return new JogadorResponse { 
+                    Sucesso = false, Mensagem = "Erro ao Atualizar jogador. Detalhes: " + ex.Message };
             }
 
-            return new JogadorResponse() { Sucesso = false };
         }
 
         public async Task<JogadorResponse> DeleteJogadorAsync(int jogadorId)
         {
-            var response = await _context.Jogadores.FindAsync(jogadorId)
-                ?? throw new Exception("Jogador para delete não encontrado.");
+            try
+            {
+                var response = await _context.Jogadores.FindAsync(jogadorId);
 
-            _geralPersist.Delete(response);
+                if (response == null) return new JogadorResponse() { Sucesso = false };
 
-            await _geralPersist.SaveChangesAsync();
+                _geralPersist.Delete(response);
 
-            return _mapper.Map<JogadorResponse>(response);
+                await _geralPersist.SaveChangesAsync();
+
+                return _mapper.Map<JogadorResponse>(response);
+            }
+            catch (Exception ex)
+            {
+                return new JogadorResponse { 
+                    Sucesso = false, Mensagem = "Erro ao deletar jogador. Detalhes: " + ex.Message };
+            }
         } 
     }
 }

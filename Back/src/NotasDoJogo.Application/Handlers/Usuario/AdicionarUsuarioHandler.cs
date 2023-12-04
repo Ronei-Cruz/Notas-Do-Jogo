@@ -16,15 +16,8 @@ namespace NotasDoJogo.Application.Handlers.Usuario
 
         public async Task<UsuarioResponse> Handle(UsuarioRequest request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var resultado = await _service.AdicionarUsuarioAsync(request);
-                return resultado;
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException("Erro ao lançar a solicitação: ", ex);
-            }
+            var resultado = await _service.AdicionarUsuarioAsync(request);
+            return resultado;
         }
     }
 }

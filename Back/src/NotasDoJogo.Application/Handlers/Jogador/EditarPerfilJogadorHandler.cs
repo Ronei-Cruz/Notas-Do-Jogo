@@ -17,15 +17,8 @@ namespace NotasDoJogo.Application.Handlers.Jogador
 
         public async Task<JogadorResponse> Handle(EditarItemQuery<JogadorRequest, JogadorResponse> request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var response = await _service.EditarJogadorAsync(request.Id, request.Request);
-                return response;
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException("Erro ao editar perfil do jogador: ", ex);
-            }
+            var response = await _service.EditarJogadorAsync(request.Id, request.Request);
+            return response;
         }
     }
 }

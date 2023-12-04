@@ -17,15 +17,8 @@ namespace NotasDoJogo.Application.Handlers.Usuario
 
         public async Task<UsuarioResponse> Handle(EditarItemQuery<UsuarioRequest, UsuarioResponse> request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var response = await _service.EditarUsuarioAsync(request.Id, request.Request);
-                return response;
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException("Erro ao editar perfil do usuário: ", ex);
-            }
+            var response = await _service.EditarUsuarioAsync(request.Id, request.Request);
+            return response;
         }
     }
 }

@@ -16,15 +16,8 @@ namespace NotasDoJogo.Application.Handlers.Jogador
 
         public async Task<JogadorResponse> Handle(DeletarItemQuery<JogadorResponse> request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var jogador = await _service.DeleteJogadorAsync(request.Id);
-                return jogador;
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException("Erro ao deletar perfil do jogador: ", ex);
-            }
+            var jogador = await _service.DeleteJogadorAsync(request.Id);
+            return jogador;
         }
     }
 }

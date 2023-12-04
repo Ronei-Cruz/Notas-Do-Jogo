@@ -16,14 +16,7 @@ public class VisualizarJogadoresHandler : IRequestHandler<VisualizarItensQuery<J
 
     public async Task<List<JogadorResponse>> Handle(VisualizarItensQuery<JogadorResponse> request, CancellationToken cancellationToken)
     {
-        try
-        {
-            var jogadores = await _service.GetJogadoresAsync();
-            return jogadores;
-        }
-        catch (Exception ex)
-        {
-            throw new ApplicationException("Erro ao visualizar a jogadores: ", ex);
-        }
+        var jogadores = await _service.GetJogadoresAsync();
+        return jogadores;
     }
 }

@@ -6,6 +6,7 @@ using NotasDoJogo.Application.Handlers.Partida;
 using NotasDoJogo.Persistence.Contracts;
 using NotasDoJogo.Persistence.Repository;
 using NotasDoJogo.Persistence.Services;
+using NotasDoJogo.Application.Handlers.Nota;
 
 namespace NotasDoJogo.API.ConfigDependencies
 {
@@ -37,7 +38,15 @@ namespace NotasDoJogo.API.ConfigDependencies
                 typeof(VisualizarPartidasHandler).Assembly,
                 typeof(InformacoesPartidaHandler).Assembly,
                 typeof(EditarInformacoesPartidaHandler).Assembly,
-                typeof(DeletarPartidaHandler).Assembly
+                typeof(DeletarPartidaHandler).Assembly,
+
+                // NOTA
+                typeof(AdicionarNotaHandler).Assembly,
+                typeof(BuscarNotasDoJogadorPorPartidaHandler).Assembly,
+                typeof(MediaJogadorPorPartidaHandler).Assembly,
+                typeof(NotaMediaDaPartidaHandler).Assembly,
+                typeof(NotasDoUsuarioHandler).Assembly,
+                typeof(VisualizarNotaPorIdHandler).Assembly
             );
             #endregion
 

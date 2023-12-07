@@ -1,17 +1,21 @@
-using NotasDoJogo.Application.Commands.Jogador.Response;
-using NotasDoJogo.Application.Commands.Partida.Response;
-using NotasDoJogo.Application.Commands.Usuario.Response;
+using System.Text.Json.Serialization;
 
-namespace NotasDoJogo.Application.Commands.Nota.Response;
-
-public class NotaResponse : ApiResponse
+namespace NotasDoJogo.Application.Commands.Nota.Response
 {
-    public int Id { get; set; }
-    public int JogadorId { get; set; }
-    public JogadorResponse Jogador { get; set; }
-    public int UsuarioId { get; set; }
-    public UsuarioResponse Usuario { get; set; }
-    public int PartidaId { get; set; }
-    public PartidaResponse Partida { get; set; }
-    public int Valor { get; set; }
+    public class NotaResponse : ApiResponse
+    {
+        public int Id { get; set; }
+        [JsonIgnore]
+        public int JogadorId { get; set; }
+        public string NomeJogador { get; set; }
+        [JsonIgnore]
+        public int UsuarioId { get; set; } 
+        public string NomeUsuario { get; set; }
+        [JsonIgnore]
+        public int PartidaId { get; set; }
+        public string Jogo { get; set; }
+        public int Valor { get; set; }
+        [JsonIgnore]
+        public decimal Media { get; set; }
+    }
 }

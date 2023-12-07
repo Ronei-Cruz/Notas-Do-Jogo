@@ -1,6 +1,9 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using NotasDoJogo.Application.Contracts;
-using NotasDoJogo.Application.Dtos;
+using NotasDoJogo.Application.Commands.Nota.Request;
+using NotasDoJogo.Application.Commands.Nota.Response;
+using NotasDoJogo.Application.Commands.Queries;
+using NotasDoJogo.Application.Commands.Request;
 
 namespace NotasDoJogo.API.Controllers
 {
@@ -8,118 +11,128 @@ namespace NotasDoJogo.API.Controllers
     [Route("api/[controller]")]
     public class NotaController : ControllerBase
     {
-        private readonly INotaService _notaService;
+        private readonly IMediator _mediator;
 
-        public NotaController(INotaService notaService)
+        public NotaController(IMediator mediator)
         {
-            _notaService = notaService;
+            _mediator = mediator;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddNota([FromBody] NotaDto notaDto)
+        [HttpPost("adicionar-nota")]
+        public async Task<IActionResult> AdicionarNotaParaJogador([FromBody] NotaRequest request)
         {
-            try
-            {
-                var nota = await _notaService.AddNotaAsync(notaDto);
-                if(nota != null)
-                    return CreatedAtAction(nameof(GetNotaById), new { id = nota.Id }, nota);
+            if (request == null)
+                return BadRequest("Request inválida");
 
-                return BadRequest("Falha ao adicionar nota.");
-            }   
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
-            }
+            var response = await _mediator.Send(request);
+
+            if (!response.Sucesso)
+                return BadRequest("Erro ao adicionar Jogador!");
+
+            return Ok(response);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetNotaById(int id)
+        [HttpGet("visualizar-nota/{id}")]
+        public async Task<IActionResult> BuscarNotaById(int id)
         {
-            try
-            {
-                var nota = await _notaService.GetNotaByIdAsync(id);
-                if(nota != null) return Ok(nota);
+            if (id <= 0)
+                return BadRequest("Id inválido");
 
-                return NotFound("Nota não encontrada.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
-            }
+            var response = await _mediator.Send(new ObterItemQuery<NotaResponse>(id));
+
+            if (!response.Sucesso)
+                return NotFound("Nota não encontrada!");
+
+            return Ok(response);
         }
 
-        [HttpGet("jogador/{jogadorId}/partida/{partidaId}")]
-        public async Task<IActionResult> GetNotasByJogadorId(int jogadorId, int partidaId)
+        [HttpGet("notas-jogador/{jogadorId}/partida/{partidaId}")]
+        public async Task<IActionResult> BuscarNotasDoJogadorPorPartida(int jogadorId, int partidaId)
         {
-            try
+            var request = new NotaJogadorPorPartidaRequest
             {
-                var notas = await _notaService.GetNotasPartidaIdByJogadorIdAsync(jogadorId, partidaId);
-                return Ok(notas);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+                JogadorId = jogadorId,
+                PartidaId = partidaId
+            };
+            
+            var response = await _mediator.Send(request);
+            if(response == null) return NotFound("Nenhum jogador ou partida encontrada!");
+
+            return Ok(response);
+            
         }
 
-        [HttpGet("usuario/{usuarioId}")]
-        public async Task<IActionResult> GetNotasByUsuarioId(int usuarioId)
+        [HttpGet("media-jogador/{jogadorId}/partida/{partidaId}")]
+        public async Task<IActionResult> CalcularMediaDeJogadorPorPartida(int jogadorId, int partidaId)
         {
-            try
+            var request = new MediaJogadorPorPartidaRequest
             {
-                var notas = await _notaService.GetNotasByUsuarioIdAsync(usuarioId);
-                return Ok(notas);
-            }
-            catch (Exception ex)
+                JogadorId = jogadorId,
+                PartidaId = partidaId
+            };
+
+            var response = await _mediator.Send(request);
+
+            var result = new
             {
-                return BadRequest(ex.Message);
-            }
+                JogadorNome = response.NomeJogador,
+                Media = response.Media
+            };
+
+            return Ok(result);
         }
 
-        [HttpGet("partida/{partidaId}/media")]
-        public async Task<IActionResult> GetMediaByPartidaId(int partidaId)
+        [HttpGet("notas-usuario/{usuarioId}")]
+        public async Task<IActionResult> BuscarNotasDoUsuario(int usuarioId)
         {
-            try
+            if (usuarioId <= 0)
+                return BadRequest("Id inválido");
+
+            var request = new NotasDoUsuarioRequest
             {
-                var notas = await _notaService.GetMediaPartidaAsync(partidaId);
-                if(notas == 0) return Ok("Partida não encotrada");
-                return Ok(notas);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+                UsuarioId = usuarioId
+            };
+
+            var response = await _mediator.Send(request);
+            return Ok(response);
         }
 
-        [HttpGet("jogador/{jogadorId}/partida/{partidaId}/media")]
-        public async Task<IActionResult> GetNotaMediaByJogadorId(int jogadorId, int partidaId)
+        [HttpGet("nota-media-partida/{partidaId}")]
+        public async Task<IActionResult> CalcularMediaByPartidaId(int partidaId)
         {
-            try
+            if (partidaId <= 0) 
+                return BadRequest("Id inválido");
+
+            var request = new NotaMediaDaPartidaRequest
             {
-                var media = await _notaService.GetNotaCountByJogadorIdAsync(jogadorId, partidaId);
-                return Ok(media);
-            }
-            catch (Exception ex)
+                PartidaId = partidaId
+            };
+
+            var response = await _mediator.Send(request);
+
+            var result = new
             {
-                return BadRequest(ex.Message);
-            }
+                Partida = response.Jogo,
+                Media = response.Media
+            };
+
+            return Ok(result);           
         }
 
-        [HttpDelete("{id}")]
+        
+
+        [HttpDelete("deletar-nota/{id}")]
         public async Task<IActionResult> DeleteNota(int id)
         {
-            try
-            {
-                var Nota = await _notaService.GetNotaByIdAsync(id);
-                if (Nota == null) return NoContent();
+            if (id <= 0)
+                return BadRequest("Id inválido");
 
-                return await _notaService.DeleteNotaAsync(id) ? Ok(new {message = "Deletado."}) :
-                    throw new Exception("Ocorreu um problema não especifico ao tentar deletar Nota.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
-            }
+            var response = await _mediator.Send(new DeletarItemQuery<NotaResponse>(id));
+
+            if (!response.Sucesso)
+                return NotFound("Nota não encontrada!");
+
+            return Ok(response.Mensagem = "Nota deletada com Sucesso!");
         }
     }
 }

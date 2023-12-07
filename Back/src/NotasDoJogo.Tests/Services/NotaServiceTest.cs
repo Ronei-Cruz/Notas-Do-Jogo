@@ -10,7 +10,7 @@ namespace NotasDoJogo.Tests.Services
 {
     public class NotaServiceTest
     {
-        private readonly NotaService notaService;
+        /*private readonly NotaService notaService;
         private readonly Mock<IGeralPersist> mockGeralPersist;
         private readonly Mock<INotaPersist> mockNotaPersist;
         private readonly Mock<IMapper> mockMapper;
@@ -230,6 +230,6 @@ namespace NotasDoJogo.Tests.Services
             mockNotaPersist.Verify(n => n.GetByIdAsync(It.IsAny<int>()), Times.Once);
             mockGeralPersist.Verify(g => g.Delete(It.IsAny<Nota>()), Times.Once);
             mockGeralPersist.Verify(g => g.SaveChangesAsync(), Times.Once);
-        }
+        }*/
     }
 }

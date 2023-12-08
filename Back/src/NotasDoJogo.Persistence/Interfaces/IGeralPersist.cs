@@ -1,4 +1,4 @@
-namespace NotasDoJogo.Persistence.Contracts
+namespace NotasDoJogo.Persistence.Interfaces
 {
     public interface IGeralPersist
     {

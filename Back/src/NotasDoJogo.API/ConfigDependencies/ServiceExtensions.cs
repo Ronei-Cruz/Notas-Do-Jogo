@@ -3,7 +3,7 @@ using NotasDoJogo.Application.Contracts;
 using NotasDoJogo.Application.Handlers.Jogador;
 using NotasDoJogo.Application.Handlers.Usuario;
 using NotasDoJogo.Application.Handlers.Partida;
-using NotasDoJogo.Persistence.Contracts;
+using NotasDoJogo.Persistence.Interfaces;
 using NotasDoJogo.Persistence.Repository;
 using NotasDoJogo.Persistence.Services;
 using NotasDoJogo.Application.Handlers.Nota;
@@ -52,7 +52,6 @@ namespace NotasDoJogo.API.ConfigDependencies
 
             #region PERSIST
             services.AddScoped<IGeralPersist, GeralPersist>();
-            services.AddScoped<INotaPersist, NotaPersist>();
             #endregion
 
             #region SERVICES

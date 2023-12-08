@@ -1,5 +1,4 @@
 using AutoMapper;
-using NotasDoJogo.Application.Dtos;
 using NotasDoJogo.Domain.Models;
 using NotasDoJogo.Application.Commands.Jogador.Request;
 using NotasDoJogo.Application.Commands.Jogador.Response;

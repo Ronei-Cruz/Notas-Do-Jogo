@@ -8,7 +8,7 @@ using NotasDoJogo.Application.Commands.Usuario.Response;
 using NotasDoJogo.Application.Contracts;
 using NotasDoJogo.Domain.Models;
 using NotasDoJogo.Persistence.Contexts;
-using NotasDoJogo.Persistence.Contracts;
+using NotasDoJogo.Persistence.Interfaces;
 
 namespace NotasDoJogo.Persistence.Services
 {

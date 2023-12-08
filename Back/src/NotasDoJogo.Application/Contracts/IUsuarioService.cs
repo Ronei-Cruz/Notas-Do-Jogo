@@ -1,6 +1,5 @@
 using NotasDoJogo.Application.Commands.Usuario.Request;
 using NotasDoJogo.Application.Commands.Usuario.Response;
-using NotasDoJogo.Application.Dtos;
 
 namespace NotasDoJogo.Application.Contracts
 {

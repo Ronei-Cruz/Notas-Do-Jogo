@@ -11,8 +11,8 @@ using NotasDoJogo.Persistence.Contexts;
 namespace NotasDoJogo.Persistence.Migrations
 {
     [DbContext(typeof(NJContext))]
-    [Migration("20231127125557_Initial")]
-    partial class Initial
+    [Migration("20240104164056_InitialMig")]
+    partial class InitialMig
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -103,6 +103,12 @@ namespace NotasDoJogo.Persistence.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Nome")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Perfil")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Senha")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");

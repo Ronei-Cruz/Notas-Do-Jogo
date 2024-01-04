@@ -17,7 +17,8 @@ namespace NotasDoJogo.Application.Helpers
         {
             CreateMap<Jogador, JogadorResponse>();
             CreateMap<JogadorRequest, Jogador>();
-            CreateMap<Usuario, UsuarioResponse>();
+            CreateMap<Usuario, UsuarioResponse>()
+                .ForMember(dest => dest.Perfil, opt => opt.MapFrom(src => src.Perfil));
             CreateMap<UsuarioRequest, Usuario>();
             CreateMap<Partida, PartidaResponse>();
             CreateMap<PartidaRequest, Partida>();

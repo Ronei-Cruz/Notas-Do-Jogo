@@ -2,10 +2,8 @@ using AutoMapper;
 using Moq;
 using NotasDoJogo.Application.Commands.Jogador.Request;
 using NotasDoJogo.Application.Contracts;
-using NotasDoJogo.Application.Dtos;
 using NotasDoJogo.Domain.Models;
 using NotasDoJogo.Persistence.Contexts;
-using NotasDoJogo.Persistence.Contracts;
 using NotasDoJogo.Persistence.Services;
 using Xunit;
 

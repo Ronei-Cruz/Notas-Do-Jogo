@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NotasDoJogo.API.Controllers;
-using NotasDoJogo.Application.Contracts;
-using NotasDoJogo.Application.Dtos;
 using NotasDoJogo.Domain.Models;
 using Xunit;
 

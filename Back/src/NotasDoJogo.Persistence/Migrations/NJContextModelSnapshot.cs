@@ -103,6 +103,12 @@ namespace NotasDoJogo.Persistence.Migrations
                     b.Property<string>("Nome")
                         .HasColumnType("longtext");
 
+                    b.Property<int>("Perfil")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Senha")
+                        .HasColumnType("longtext");
+
                     b.HasKey("Id");
 
                     b.ToTable("Usuarios");

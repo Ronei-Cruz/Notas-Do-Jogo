@@ -1,6 +1,5 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using NotasDoJogo.Application;
 using NotasDoJogo.Application.Commands.Queries;
 using NotasDoJogo.Application.Commands.Request;
 using NotasDoJogo.Application.Commands.Usuario.Request;
